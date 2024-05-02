@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
 
 const TriviaApp = () => {
   const [triviaData, setTriviaData] = useState(null);
@@ -7,10 +9,10 @@ const TriviaApp = () => {
     const fetchTriviaData = async () => {
       try {
         const response = await fetch(
-          'https://opentdb.com/api.php?amount=10&type=multiple'
+          // 'https://opentdb.com/api.php?amount=10&type=multiple'
+          'https://opentdb.com/api_category.php'
         );
         const data = await response.json();
-        console.log(data);
         setTriviaData(data);
       } catch (error) {
         console.error('Error fetching trivia data:', error);
@@ -21,79 +23,70 @@ const TriviaApp = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Trivia App</h1>
-      <div className="carousel w-full">
-        <div id="slide1" className="carousel-item relative w-full">
-          <img
-            src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg"
-            className="w-full"
-          />
-          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-            <a href="#slide4" className="btn btn-circle">
-              ❮
-            </a>
-            <a href="#slide2" className="btn btn-circle">
-              ❯
-            </a>
+    <div className="drawer  lg:drawer-open">
+      <input
+        id="left-sidebar-drawer"
+        type="checkbox"
+        className="drawer-toggle"
+      />
+      <div className="drawer-content flex flex-col">
+        <div className="navbar sticky top-0 bg-base-100  z-10 shadow-md ">
+          <div className="flex-1">
+            <label
+              htmlFor="left-sidebar-drawer"
+              className="btn btn-primary drawer-button lg:hidden"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                aria-hidden="true"
+                className="h-5 inline-block w-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                ></path>
+              </svg>
+            </label>
+            <h1 className="text-2xl font-semibold ml-2"></h1>
+          </div>
+          <div className="flex-none">
+            <div className="dropdown dropdown-end ml-4">
+              <label tabIndex="0" className="btn btn-ghost btn-circle avatar">
+                <div className="w-10 rounded-full">
+                  <img
+                    src="https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg"
+                    alt="profile"
+                  />
+                </div>
+              </label>
+              <ul
+                tabIndex="0"
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li className="justify-between">
+                  <a href="/app/settings-profile">
+                    Profile Settings<span className="badge">New</span>
+                  </a>
+                </li>
+                <li className="">
+                  <a href="/app/settings-billing">Bill History</a>
+                </li>
+                <div className="divider mt-0 mb-0"></div>
+                <li>
+                  <a>Logout</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div id="slide2" className="carousel-item relative w-full">
-          <img
-            src="https://daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg"
-            className="w-full"
-          />
-          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-            <a href="#slide1" className="btn btn-circle">
-              ❮
-            </a>
-            <a href="#slide3" className="btn btn-circle">
-              ❯
-            </a>
-          </div>
-        </div>
-        <div id="slide3" className="carousel-item relative w-full">
-          <img
-            src="https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg"
-            className="w-full"
-          />
-          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-            <a href="#slide2" className="btn btn-circle">
-              ❮
-            </a>
-            <a href="#slide4" className="btn btn-circle">
-              ❯
-            </a>
-          </div>
-        </div>
-        <div id="slide4" className="carousel-item relative w-full">
-          <img
-            src="https://daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.jpg"
-            className="w-full"
-          />
-          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-            <a href="#slide3" className="btn btn-circle">
-              ❮
-            </a>
-            <a href="#slide1" className="btn btn-circle">
-              ❯
-            </a>
-          </div>
-        </div>
+        <Outlet />
       </div>
-      {triviaData &&
-        triviaData.results.map((question, index) => (
-          <div key={index}>
-            <h3>Question {index + 1}:</h3>
-            <p>{question.question}</p>
-            <ul>
-              {question.incorrect_answers.map((answer, idx) => (
-                <li key={idx}>{answer}</li>
-              ))}
-              <li>{question.correct_answer}</li>
-            </ul>
-          </div>
-        ))}
+      <Sidebar />
     </div>
   );
 };
