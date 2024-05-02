@@ -1,0 +1,3 @@
+GENERIC_MESSAGES = {
+    "SUCCESS" : 'SUCCESS'
+}
