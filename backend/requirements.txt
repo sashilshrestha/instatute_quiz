@@ -4,3 +4,6 @@ environs
 rest_framework_mongoengine
 django_mongoengine
 rest_framework_simplejwt
+django-rest-framework-mongoengine
+djangorestframework-simplejwt  
+django-mongoengine
