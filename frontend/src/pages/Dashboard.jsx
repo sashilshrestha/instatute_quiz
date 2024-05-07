@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Card from './Card'
+import Card from './Card' 
 
 const Dashboard = () => {
   return (
@@ -1051,6 +1051,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+          
           <div className="card w-full p-6 bg-base-100 shadow-xl mt-6">
             <div className="text-xl font-semibold ">Orders by Category</div>
             <div className="divider mt-2"></div>
