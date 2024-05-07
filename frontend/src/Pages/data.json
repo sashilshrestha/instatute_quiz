@@ -1,0 +1,22 @@
+[
+    {
+      "category": "Basic Knowledge",
+      "score": 80,
+      "icon": "./assets/images/icon-reaction.svg"
+    },
+    {
+      "category": "Problem solving",
+      "score": 92,
+      "icon": "./assets/images/icon-memory.svg"
+    },
+    {
+      "category": "Analytical Thinking",
+      "score": 61,
+      "icon": "./assets/images/icon-verbal.svg"
+    },
+    {
+      "category": "Memory",
+      "score": 72,
+      "icon": "./assets/images/icon-visual.svg"
+    }
+  ]

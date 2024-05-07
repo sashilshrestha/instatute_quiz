@@ -1,4 +1,5 @@
 import React from 'react';
+import Card from './Card'
 
 const Dashboard = () => {
   return (
@@ -1074,8 +1075,13 @@ const Dashboard = () => {
         </div>
         <div className="h-16"></div>
       </main>
-      <div>Dashboard</div>
-    </>
+      <div>Dashboard 
+      {/* <div className="flex min-h-screen sm:p-10 justify-center items-center bg-[#c8c7ff]">
+      <Card />
+    </div> */}
+    
+        </div>
+    </> 
   );
 };
 
