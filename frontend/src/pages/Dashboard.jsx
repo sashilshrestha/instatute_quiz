@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Card from './Card' 
-
+import TopScoreBoard from './TopScoreBoard';
 const Dashboard = () => {
   return (
     <>
@@ -1059,6 +1058,7 @@ const Dashboard = () => {
           </div>
         </div> */}
         <div className="h-16"></div>
+        <TopScoreBoard></TopScoreBoard>
       </main>
     </>
   );
