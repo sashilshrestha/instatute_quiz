@@ -69,9 +69,7 @@ const TriviaApp = () => {
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li className="justify-between">
-                  <a href="/app/settings-profile">
-                    Profile Settings<span className="badge">New</span>
-                  </a>
+                  <a href="/app/settings-profile">Profile Settings</a>
                 </li>
                 <li className="">
                   <a href="/app/settings-billing">Bill History</a>
@@ -87,6 +85,32 @@ const TriviaApp = () => {
         <Outlet />
       </div>
       <Sidebar />
+      <dialog id="my_modal_1" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Let's Begin !</h3>
+          <p className="py-4">
+            You are about to start the /Category/ quiz. Please note that you cannot go back
+            once you start. Make sure you are ready to begin.
+          </p>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 items-center gap-4">
+              <span className="text-right font-medium">Total Questions:</span>
+              <span>25</span>
+            </div>
+            <div className="grid grid-cols-2 items-center gap-4">
+              <span className="text-right font-medium">Total Time:</span>
+              <span>60 minutes</span>
+            </div>
+          </div>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn btn-primary mr-3">Start Quiz</button>
+              <button className="btn btn-outline">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 };

@@ -1,20 +1,14 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Card from './Card'
 
 const Dashboard = () => {
   return (
     <>
-      <main className="flex-1 overflow-y-auto md:pt-4 pt-4 px-6  bg-base-200 hidden">
+      <main className="flex-1 overflow-y-auto md:pt-4 pt-4 px-6 bg-base-200">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="">
             <div className="w-72 ">
-              <input
-                type="text"
-                className="input input-bordered w-72"
-                placeholder="YYYY-MM-DD ~ YYYY-MM-DD"
-                autoComplete="off"
-                role="presentation"
-              />
               <button type="button" className="invisible">
                 <svg
                   className="h-5 w-5"
@@ -754,10 +748,12 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="text-right ">
-            <button className="btn btn-primary btn-sm normal-case">
-              Start Quiz
-            </button>
-            <div className="dropdown dropdown-bottom dropdown-end  ml-2">
+            <Link to="/categories">
+              <button className="btn btn-primary btn-sm normal-case">
+                Start Quiz
+              </button>
+            </Link>
+            {/* <div className="dropdown dropdown-bottom dropdown-end  ml-2">
               <label
                 tabIndex="0"
                 className="btn btn-ghost btn-sm normal-case btn-square "
@@ -823,7 +819,7 @@ const Dashboard = () => {
                   </a>
                 </li>
               </ul>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
@@ -846,10 +842,8 @@ const Dashboard = () => {
                   ></path>
                 </svg>
               </div>
-              <div className="stat-title dark:text-slate-300">New Users</div>
-              <div className="stat-value dark:text-slate-300 text-primary">
-                34.7k
-              </div>
+              <div className="text-primary">New Users</div>
+              <div className="stat-value">34.7k</div>
               <div className="stat-desc  font-bold text-green-700 dark:text-green-300">
                 ↗︎ 2300 (22%)
               </div>
@@ -938,21 +932,9 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
-          <div className="card w-full p-6 bg-base-100 shadow-xl mt-6">
-            <div className="text-xl font-semibold ">
-              Montly Active Users (in K)
-            </div>
-            <div className="divider mt-2"></div>
-            <div className="h-full w-full pb-6 bg-base-100"></div>
-          </div>
-          <div className="card w-full p-6 bg-base-100 shadow-xl mt-6">
-            <div className="text-xl font-semibold ">Revenue</div>
-            <div className="divider mt-2"></div>
-            <div className="h-full w-full pb-6 bg-base-100"></div>
-          </div>
-        </div>
-        <div className="grid lg:grid-cols-2 mt-10 grid-cols-1 gap-6">
+
+        {/* Hidden Start */}
+        <div className="grid lg:grid-cols-2 mt-10 grid-cols-1 gap-6 hidden">
           <div className="stats bg-base-100 shadow">
             <div className="stat">
               <div className="stat-title">Amount to be Collected</div>
@@ -1016,7 +998,9 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
+        {/* Hidden End */}
+
+        {/* <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
           <div className="card w-full p-6 bg-base-100 shadow-xl mt-6">
             <div className="text-xl font-semibold ">User Signup Source</div>
             <div className="divider mt-2"></div>
@@ -1072,16 +1056,10 @@ const Dashboard = () => {
             <div className="divider mt-2"></div>
             <div className="h-full w-full pb-6 bg-base-100"></div>
           </div>
-        </div>
+        </div> */}
         <div className="h-16"></div>
       </main>
-      <div>Dashboard 
-      {/* <div className="flex min-h-screen sm:p-10 justify-center items-center bg-[#c8c7ff]">
-      <Card />
-    </div> */}
-    
-        </div>
-    </> 
+    </>
   );
 };
 
