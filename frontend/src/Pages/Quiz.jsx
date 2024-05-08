@@ -1,21 +1,25 @@
 import { useState, useEffect, useReducer } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 import Loading from '../components/Loading';
 import Questions from '../components/Questions';
+import Finish from './Finish';
+import Alert from '../components/Alert';
 
 const initialState = {
   questions: [],
-  // loading, error, ready, active, finished
   status: 'loading',
-  index: 2,
+  index: 0,
+  selectedOption: null,
 };
 
-function reducer(state, action) {
+const reducer = (state, action) => {
   switch (action.type) {
     case 'dataReceived':
       return {
         ...state,
         questions: action.payload,
-        status: 'ready',
+        status: 'active',
       };
     case 'dataFailed':
       return {
@@ -28,10 +32,14 @@ function reducer(state, action) {
         status: 'active',
       };
     case 'nextQuestion':
-      // Move to the next question
       const nextIndex = state.index + 1;
+      if (state.selectedOption === null) {
+        return {
+          ...state,
+          status: 'selectOneOption',
+        };
+      }
       if (nextIndex >= state.questions.length) {
-        // If there are no more questions, change status to 'finished'
         return {
           ...state,
           status: 'finished',
@@ -42,38 +50,58 @@ function reducer(state, action) {
           index: nextIndex,
         };
       }
-
+    case 'selectOption':
+      return {
+        ...state,
+        selectedOption: action.payload,
+      };
     default:
       throw new Error('Action Unknown');
   }
-}
+};
 
-function shuffleArray(array) {
+const shuffleArray = (array) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
-}
+};
 
-function rearrangeAnswers(correctAnswer, incorrectAnswers) {
+const rearrangeAnswers = (correctAnswer, incorrectAnswers) => {
   const allAnswers = [correctAnswer, ...incorrectAnswers];
   return shuffleArray(allAnswers);
-}
+};
 
 const Quiz = () => {
-  const [{ status, questions, index }, dispatch] = useReducer(
+  const [{ status, questions, index, selectedOption }, dispatch] = useReducer(
     reducer,
     initialState
   );
-  const [receivedFromChild, setReceievedFromChild] = useState(null);
-  const [answerList, setAnswerList] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+
+  const { categoryId } = useParams();
+
+  const navigate = useNavigate();
+  const [secondsLeft, setSecondsLeft] = useState(600);
+
+  const nextBtn = () => {
+    if (selectedOption !== null) {
+      dispatch({ type: 'nextQuestion' });
+      setShowAlert(false);
+    } else {
+      setShowAlert(true);
+    }
+    dispatch({ type: 'selectOption', payload: null });
+  };
+
+  const formattedTime = format(new Date(0, 0, 0, 0, 0, secondsLeft), 'mm:ss');
 
   useEffect(() => {
     const fetchTriviaData = async () => {
       try {
         const response = await fetch(
-          'https://opentdb.com/api.php?amount=10&type=multiple'
+          `https://opentdb.com/api.php?amount=10&type=multiple&category=${categoryId}`
         );
         const data = await response.json();
 
@@ -86,7 +114,6 @@ const Quiz = () => {
             ),
           };
         });
-        console.log(organizedData);
 
         dispatch({ type: 'dataReceived', payload: organizedData });
       } catch (error) {
@@ -97,37 +124,86 @@ const Quiz = () => {
     fetchTriviaData();
   }, []);
 
-  const nextBtn = () => {
-    dispatch({ type: 'nextQuestion' });
-    setAnswerList((data) => [...data, receivedFromChild]);
-  };
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSecondsLeft((prevSeconds) => prevSeconds - 1);
+    }, 1000);
 
+    if (secondsLeft === 0) {
+      navigate('/timeout', { replace: true });
+    }
+
+    return () => clearInterval(timer); // Cleanup on unmount
+  }, [navigate, secondsLeft]);
   return (
-    <main className="flex-1 overflow-y-auto md:pt-4 pt-4 px-6 bg-base-200 justify-center flex">
-      <div className="w-1/2">
-        {status === 'loading' && <Loading />}
+    <main
+      className={`px-4 md:px-8 py-12 md:py-10 bg-base-200 flex flex-1 flex-col gap-5 ${
+        status === 'finished' && 'justify-center'
+      }`}
+    >
+      {status !== 'finished' && (
+        <div className="text-center bg-primary p-8 rounded-lg">
+          <h1 className="text-3xl md:text-4xl font-bold text-white">
+            You are now playing quiz
+          </h1>
+          <p className="text-gray-100  mt-2 md:text-lg"></p>
+        </div>
+      )}
+      <div className="flex justify-center">
+        <div className="w-1/2 h-fit">
+          {status === 'loading' && <Loading />}
 
-        {status === 'ready' && (
-          <div>
-            <button onClick={() => dispatch({ type: 'start' })}>
-              Start Now
-            </button>
-          </div>
-        )}
-        {status === 'active' && (
-          <Questions
-            data={questions[index]}
-            sendDataToParent={(option) => setReceievedFromChild(option)}
-            selectedIdx={receivedFromChild}
-          />
-        )}
-        {status === 'active' && (
-          <div className="flex justify-end">
-            <button className="btn-secondary btn mt-4 " onClick={nextBtn}>
-              Next
-            </button>
-          </div>
-        )}
+          {status === 'active' && (
+            <main className="flex flex-col items-left justify-center">
+              <div className="flex justify-end gap-2">
+                # Questions{' '}
+                <p className="font-bold">
+                  {index + 1}/{questions.length}
+                </p>
+              </div>
+              <Questions
+                data={questions[index]}
+                sendDataToParent={(option) =>
+                  dispatch({ type: 'selectOption', payload: option })
+                }
+                selectedIdx={selectedOption}
+                timeRemaining={formattedTime}
+              />
+            </main>
+          )}
+          {status === 'active' && (
+            <div className="flex justify-end">
+              <button className="btn-secondary btn btn-sm" onClick={nextBtn}>
+                Next
+              </button>
+            </div>
+          )}
+          {status === 'finished' && <Finish />}
+
+          {showAlert && (
+            <Alert>
+              <div
+                role="alert"
+                className="alert alert-error !p-2 absolute bottom-5 right-2 w-max text-sm flex gap-1 items-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="stroke-current shrink-0 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>Please select one option.</span>
+              </div>
+            </Alert>
+          )}
+        </div>
       </div>
     </main>
   );
