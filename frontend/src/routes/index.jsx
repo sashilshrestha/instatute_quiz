@@ -6,6 +6,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Categories from '../pages/Categories';
 import Quiz from '../pages/Quiz';
+import Profile from '../pages/Profile';
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: 'quiz',
         element: <Quiz />,
+      }, 
+      {
+        path: 'profile',
+        element: <Profile/>,
       },
     ],
   },

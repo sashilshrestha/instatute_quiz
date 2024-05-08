@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
+import { Link } from 'react-router-dom';
 
 const TriviaApp = () => {
   const [triviaData, setTriviaData] = useState(null);
@@ -69,10 +70,9 @@ const TriviaApp = () => {
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li className="justify-between">
-                  <a href="/app/settings-profile">Profile Settings</a>
-                </li>
-                <li className="">
-                  <a href="/app/settings-billing">Bill History</a>
+                <Link to="/Profile">
+            Profile settings
+            </Link>
                 </li>
                 <div className="divider mt-0 mb-0"></div>
                 <li>
