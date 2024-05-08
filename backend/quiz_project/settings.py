@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django_mongoengine',
     'rest_framework_mongoengine',
     'rest_framework_simplejwt',
-    'user'
+    'user',
+    'quiz'
 ]
 
 MIDDLEWARE = [
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'user.middlewares.AuthMiddleware.AuthMiddleware'
 ]
 
 ROOT_URLCONF = 'quiz_project.urls'
