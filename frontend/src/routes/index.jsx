@@ -6,6 +6,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Categories from '../pages/Categories';
 import Quiz from '../pages/Quiz';
+import QuizTimeout from '../pages/QuizTimeout';
 import Profile from '../pages/Profile';
 
 export const router = createBrowserRouter([
@@ -25,6 +26,12 @@ export const router = createBrowserRouter([
       {
         path: 'quiz',
         element: <Quiz />,
+        children: [
+          {
+            path: ':categoryId',
+            element: <Quiz />,
+          },
+        ],
       }, 
       {
         path: 'profile',
@@ -39,5 +46,9 @@ export const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: 'timeout',
+    element: <QuizTimeout />,
   },
 ]);

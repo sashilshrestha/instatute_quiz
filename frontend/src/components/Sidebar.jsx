@@ -1,11 +1,11 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Logo from '../../public/Logo.png';
 
 const Sidebar = () => {
   return (
     <div className="drawer-side  z-30  ">
       <label htmlFor="left-sidebar-drawer" className="drawer-overlay"></label>
-      <ul className="menu  pt-2 w-80 bg-base-100 min-h-full text-base-content gap-2">
+      <ul className="menu pt-2 w-80 bg-base-100 min-h-full text-base-content gap-2">
         <li className="mb-2 font-semibold text-xl">
           <a href="/app/welcome">
             <img
@@ -34,7 +34,7 @@ const Sidebar = () => {
           </a>{' '}
         </li>
         <li className="">
-          <Link to="/dashboard">
+          <NavLink to="/dashboard">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -51,11 +51,11 @@ const Sidebar = () => {
               ></path>
             </svg>
             Dashboard
-          </Link>
+          </NavLink>
         </li>
 
         <li className="">
-          <Link to="/categories">
+          <NavLink to="/categories">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -72,10 +72,10 @@ const Sidebar = () => {
               ></path>
             </svg>
             Category
-          </Link>
+          </NavLink>
         </li>
 
-        <li className="">
+        <li className="hidden">
           <a className="font-normal" href="/app/dashboard">
             <svg
               xmlns="http://www.w3.org/2000/svg"

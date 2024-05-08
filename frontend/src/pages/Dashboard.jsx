@@ -747,12 +747,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="text-right ">
-            <Link to="/categories">
-              <button className="btn btn-primary btn-sm normal-case">
-                Start Quiz
-              </button>
-            </Link>
-            {/* <div className="dropdown dropdown-bottom dropdown-end  ml-2">
+           {/* <div className="dropdown dropdown-bottom dropdown-end  ml-2">
               <label
                 tabIndex="0"
                 className="btn btn-ghost btn-sm normal-case btn-square "
