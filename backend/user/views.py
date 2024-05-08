@@ -7,7 +7,6 @@ from .serializers import UserSerializers
 from passlib.hash import pbkdf2_sha256
 from .utils import createAccessToken
 from quiz_project.consts import GENERIC_MESSAGES
-from errrorUtils import CustomError
 
 class UserListCreate(generics.ListCreateAPIView):
     def post(self,request):
