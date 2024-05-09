@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import Modal from '../components/Modal';
+import Loading from '../components/Loading';
 
 export default function Categories() {
   const [categories, setCategories] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTriviaData = async () => {
@@ -11,6 +13,7 @@ export default function Categories() {
         const response = await fetch('https://opentdb.com/api_category.php');
         const data = await response.json();
         setCategories(data.trivia_categories);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching trivia data:', error);
       }
@@ -23,6 +26,15 @@ export default function Categories() {
     setSelectedCategory(category);
     document.getElementById('my_modal_1').showModal();
   };
+
+  if (isLoading)
+    return (
+      <div className="relative w-full h-64">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 ">
+          <Loading />
+        </div>
+      </div>
+    );
 
   return (
     <main className="w-full mx-auto px-4 md:px-8 py-12 md:py-10 bg-gray-50">

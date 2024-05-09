@@ -16,13 +16,15 @@ const Modal = ({ category }) => {
             you are ready to begin.
           </p>
           <div className="grid pb-4">
-            <div className="flex justify-end gap-4">
-              <span className="text-right font-medium">Total Questions:</span>
-              <span>25</span>
-            </div>
-            <div className="flex justify-end gap-4">
-              <span className="text-right font-medium">Total Time:</span>
-              <span>10 minutes</span>
+            <div className="flex justify-start gap-4">
+              <span className="text-right flex flex-col items-start font-bold">
+                <div>Total Questions:</div>
+                <div>Total Time:</div>
+              </span>
+              <span>
+                <div>10</div>
+                <div>10 Minutes</div>
+              </span>
             </div>
           </div>
           <div className="modal-action">

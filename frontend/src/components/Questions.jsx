@@ -28,7 +28,7 @@ const Questions = ({ sendDataToParent, data, selectedIdx, timeRemaining }) => {
           ))}
         </div>
         <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="text-sm text-secondary ">
             Time remaining: {timeRemaining}s
           </div>
         </div>
