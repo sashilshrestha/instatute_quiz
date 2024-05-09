@@ -51,6 +51,12 @@ const reducer = (state, action) => {
           index: nextIndex,
         };
       }
+    case 'lastQuestion':
+      return {
+        ...state,
+        status: 'lastQuestion',
+      };
+
     case 'selectOption':
       return {
         ...state,
@@ -87,6 +93,8 @@ const Quiz = () => {
   const [secondsLeft, setSecondsLeft] = useState(600);
 
   const nextBtn = () => {
+    if (index === 9) dispatch({ type: 'lastQuestion' });
+
     if (selectedOption !== null) {
       dispatch({ type: 'nextQuestion' });
       setShowAlert(false);
@@ -149,12 +157,12 @@ const Quiz = () => {
           {status === 'active' && (
             <main className="flex flex-col items-left justify-center">
               <div className="flex justify-start gap-2 mb-2">
-                # Questions{' '}
+                Questions{' '}
                 <p className="font-bold">
                   {index + 1}/{questions.length}
                 </p>
               </div>
-              <ProgressBar />
+              <ProgressBar rate={((index + 1) / 10) * 100} />
               <Questions
                 data={questions[index]}
                 sendDataToParent={(option) =>
@@ -168,7 +176,7 @@ const Quiz = () => {
           {status === 'active' && (
             <div className="flex justify-end">
               <button className="btn-secondary btn" onClick={nextBtn}>
-                Next
+                {index <= 8 ? 'Next' : 'Finish'}
               </button>
             </div>
           )}

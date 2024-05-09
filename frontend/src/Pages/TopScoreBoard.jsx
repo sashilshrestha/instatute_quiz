@@ -4,7 +4,7 @@ export default function TopScoreBoard() {
         <div className="max-w-3xl mx-auto">
           <div className="flex flex-col items-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2 animate-bounce">
-              🎉 Global Top Score Ranking 🎉
+              
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-lg">
               Celebrating the best of the best in our quiz competitions!

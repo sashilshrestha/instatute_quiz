@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import Logo from '../../public/Logo.png';
 
 const Sidebar = () => {
@@ -7,7 +7,7 @@ const Sidebar = () => {
       <label htmlFor="left-sidebar-drawer" className="drawer-overlay"></label>
       <ul className="menu pt-2 w-80 bg-base-100 min-h-full text-base-content gap-2">
         <li className="mb-2 font-semibold text-xl">
-          <a href="/app/welcome">
+          <Link to="/dashboard">
             <img
               className="mask mask-squircle w-10"
               src={Logo}
@@ -31,7 +31,7 @@ const Sidebar = () => {
                 ></path>
               </svg>
             </button>
-          </a>{' '}
+          </Link>
         </li>
         <li className="">
           <NavLink to="/dashboard">
