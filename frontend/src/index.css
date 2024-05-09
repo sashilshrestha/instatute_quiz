@@ -10,3 +10,12 @@ html {
   font-weight: 500;
   font-style: normal;
 }
+
+.menu li > *:not(ul, .menu-title, details, .btn):active, .menu li > *:not(ul, .menu-title, details, .btn).active, .menu li > details > summary:active {
+  background-color: #45aeee;
+  color: #1a1a1a;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}

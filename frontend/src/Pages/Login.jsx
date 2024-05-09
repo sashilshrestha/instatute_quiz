@@ -20,7 +20,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center">
+    <div className="min-h-screen bg-gray-50 flex items-center">
       <div className="card mx-auto w-full max-w-2xl shadow-xl">
         <div className="bg-base-100 rounded-xl">
           <div className="py-24 px-10">

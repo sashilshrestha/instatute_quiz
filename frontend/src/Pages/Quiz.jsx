@@ -5,6 +5,7 @@ import Loading from '../components/Loading';
 import Questions from '../components/Questions';
 import Finish from './Finish';
 import Alert from '../components/Alert';
+import ProgressBar from '../components/ProgressBar';
 
 const initialState = {
   questions: [],
@@ -137,30 +138,23 @@ const Quiz = () => {
   }, [navigate, secondsLeft]);
   return (
     <main
-      className={`px-4 md:px-8 py-12 md:py-10 bg-base-200 flex flex-1 flex-col gap-5 ${
+      className={`px-4 md:px-8 py-12 md:py-10 bg-gray-50 flex flex-1 flex-col gap-5 ${
         status === 'finished' && 'justify-center'
       }`}
     >
-      {status !== 'finished' && (
-        <div className="text-center bg-primary p-8 rounded-lg">
-          <h1 className="text-3xl md:text-4xl font-bold text-white">
-            You are now playing quiz
-          </h1>
-          <p className="text-gray-100  mt-2 md:text-lg"></p>
-        </div>
-      )}
       <div className="flex justify-center">
         <div className="w-1/2 h-fit">
           {status === 'loading' && <Loading />}
 
           {status === 'active' && (
             <main className="flex flex-col items-left justify-center">
-              <div className="flex justify-end gap-2">
+              <div className="flex justify-start gap-2 mb-2">
                 # Questions{' '}
                 <p className="font-bold">
                   {index + 1}/{questions.length}
                 </p>
               </div>
+              <ProgressBar />
               <Questions
                 data={questions[index]}
                 sendDataToParent={(option) =>
@@ -173,7 +167,7 @@ const Quiz = () => {
           )}
           {status === 'active' && (
             <div className="flex justify-end">
-              <button className="btn-secondary btn btn-sm" onClick={nextBtn}>
+              <button className="btn-secondary btn" onClick={nextBtn}>
                 Next
               </button>
             </div>
@@ -184,7 +178,7 @@ const Quiz = () => {
             <Alert>
               <div
                 role="alert"
-                className="alert alert-error !p-2 absolute bottom-5 right-2 w-max text-sm flex gap-1 items-center"
+                className="alert alert-error !py-2 absolute bottom-5 right-2 w-max text-sm flex gap-1 items-center rounded-md"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
