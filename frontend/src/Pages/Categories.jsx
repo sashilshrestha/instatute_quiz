@@ -25,7 +25,7 @@ export default function Categories() {
   };
 
   return (
-    <main className="w-full mx-auto px-4 md:px-8 py-12 md:py-10">
+    <main className="w-full mx-auto px-4 md:px-8 py-12 md:py-10 bg-gray-50">
       <div className="space-y-6 md:space-y-8">
         <div className="text-center bg-primary p-8 rounded-lg">
           <h1 className="text-3xl md:text-4xl font-bold text-white">
@@ -40,11 +40,11 @@ export default function Categories() {
             categories.map((category, index) => (
               <div
                 key={index}
-                className="card bg-base-100 rounded-lg overflow-hidden hover:scale-105 transition-all border mt-2 cursor-pointer hover:bg-primary hover:text-white hover:shadow-lg flex justify-center"
+                className="card bg-gray-50 border-2 hover:border-primary rounded-lg overflow-hidden hover:scale-105 transition-all mt-2 cursor-pointer hover:bg-primary hover:text-white hover:shadow-lg flex justify-center"
                 onClick={() => handleCategoryClick(category)}
               >
                 <div className="p-6 flex flex-col items-center gap-4">
-                  <h3 className="text-lg md:text-xl font-semibold text-center">
+                  <h3 className="text-lg font-semibold text-center">
                     {category.name}
                   </h3>
                 </div>

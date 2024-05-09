@@ -4,51 +4,47 @@ import axios from 'axios';
 import { BASE_URL } from '../consts/consts';
 
 const Register = () => {
-  const [userDetails,setUserDetails] = useState({
+  const [userDetails, setUserDetails] = useState({
     fullName: '',
     email: '',
-    password: ''
+    password: '',
   });
-  const [isLoading,setIsLoading] = useState(false); 
-  
-  const handleChange = (e, field)=>{
-    const {name,value} = e.target;
-console.log(name, value)
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e, field) => {
+    const { name, value } = e.target;
+    console.log(name, value);
 
     setUserDetails({
       ...userDetails,
-      [field]: value
-    })
-  }
+      [field]: value,
+    });
+  };
 
-  const handleSubmit = async(e) => {
-    try{
+  const handleSubmit = async (e) => {
+    try {
       e.preventDefault();
 
-      setIsLoading(true)
-    
+      setIsLoading(true);
 
-      const endPoint = BASE_URL + '/user/register'
-  
-      await axios.post(endPoint,userDetails,{
+      const endPoint = BASE_URL + '/user/register';
+
+      await axios.post(endPoint, userDetails, {
         headers: {
-          'Content-Type' : 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
 
       window.location.reload();
-    }
-    catch(err){
+    } catch (err) {
       console.log(err.message);
-    }
-    finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
 
-
   return (
-    <div className="min-h-screen bg-base-200 flex items-center">
+    <div className="min-h-screen bg-gray-50 flex items-center">
       <div className="card mx-auto w-full max-w-2xl shadow-xl">
         <div className="bg-base-100 rounded-xl">
           <div className="py-24 px-10">
@@ -67,9 +63,9 @@ console.log(name, value)
                     </span>
                   </label>
                   <input
-                    type='text'
+                    type="text"
                     value={userDetails.fullName}
-                    onChange={(e) => handleChange (e, 'fullName')}
+                    onChange={(e) => handleChange(e, 'fullName')}
                     className="input  input-bordered w-full "
                   />
                 </div>
@@ -81,9 +77,9 @@ console.log(name, value)
                     </span>
                   </label>
                   <input
-                    type='text'
+                    type="text"
                     value={userDetails.email}
-                    onChange={(e) => handleChange (e, 'email')}
+                    onChange={(e) => handleChange(e, 'email')}
                     className="input  input-bordered w-full "
                   />
                 </div>
@@ -94,23 +90,22 @@ console.log(name, value)
                     </span>
                   </label>
                   <input
-                    type='password'
+                    type="password"
                     value={userDetails.password}
-                    onChange={(e) => handleChange (e, 'password')}
+                    onChange={(e) => handleChange(e, 'password')}
                     className="input  input-bordered w-full "
                   />
                 </div>
               </div>
 
-              {
-                isLoading ? <p>Loading</p> : (
-                  <button type="submit" className={'btn mt-2 w-full btn-primary'}>
+              {isLoading ? (
+                <p>Loading</p>
+              ) : (
+                <button type="submit" className={'btn mt-2 w-full btn-primary'}>
                   Register
                 </button>
-                )
-              }
+              )}
 
-             
               <div className="text-center mt-4">
                 Already have an account?{' '}
                 {/* <Link to="/login">
