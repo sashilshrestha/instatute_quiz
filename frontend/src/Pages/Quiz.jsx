@@ -150,10 +150,15 @@ const Quiz = () => {
         status === 'finished' && 'justify-center'
       }`}
     >
+      {status === 'loading' && (
+        <div className="relative w-full h-64">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 ">
+            <Loading />
+          </div>
+        </div>
+      )}
       <div className="flex justify-center">
         <div className="w-1/2 h-fit">
-          {status === 'loading' && <Loading />}
-
           {status === 'active' && (
             <main className="flex flex-col items-left justify-center">
               <div className="flex justify-start gap-2 mb-2">
