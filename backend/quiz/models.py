@@ -7,11 +7,10 @@ class Subject(Document):
     name = StringField(required = True)
     createdAt = DateTimeField(default=datetime.datetime.now)
     updatedAt = DateTimeField(default=datetime.datetime.now)
-    
-    def __str__(self):
-        return self.name
+
     
 class QuestionSet(Document):
+    _id = StringField(required=False)
     setNumber = IntField()
     subjectId = ReferenceField(Subject, required=True)
     passMarks = IntField(required=True)
@@ -19,22 +18,20 @@ class QuestionSet(Document):
     marksPerQuestion = IntField(default=2)
     createdAt = DateTimeField(default=datetime.datetime.now)
     updatedAt = DateTimeField(default=datetime.datetime.now)
-    
-    def __str__(self):
-        return self.setNumber
+
        
 class QuestionBank(Document):
+    _id = StringField(required=False)
     questionSetId = ReferenceField(QuestionSet,required = True)  
     question = StringField()
     options =  ListField(StringField(),required=True)
     answers= ListField(StringField(),required=True)
     createdAt = DateTimeField(default=datetime.datetime.now)
     updatedAt = DateTimeField(default=datetime.datetime.now)
-    
-    def __str__(self):
-        return self.question
+
     
 class UserQuiz(Document):
+    _id = StringField(required=False)
     userId = ReferenceField(User,required=True)
     questionSetId = ReferenceField(QuestionSet,required=True)
     totalScores = IntField(required=True)
@@ -42,6 +39,4 @@ class UserQuiz(Document):
     totalAttempts = IntField(required=True)
     createdAt = DateTimeField(default=datetime.datetime.now)
     updatedAt = DateTimeField(default=datetime.datetime.now)
-    
-    def __str__(self):
-        return self.userId  
+ 

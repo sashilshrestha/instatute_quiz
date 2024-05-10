@@ -66,7 +66,6 @@ class Register(APIView):
            userExec.setPassword(password)
            userExec.save()
            
-           print(userExec)
            
            accessToken = createAccessToken({"email":email})
            
