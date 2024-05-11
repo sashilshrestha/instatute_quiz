@@ -1,7 +1,6 @@
 from user.utils import decodeToken
-from rest_framework import status
-from rest_framework.response import Response
 from user.models import User
+from user.serializers import UserSerializers
 
 class AuthMiddleware():
     def __init__(self,get_response):
@@ -39,6 +38,11 @@ class AuthMiddleware():
         if not userRecord:
             return None
         
-        return userRecord
+        userRecordSerializer = UserSerializers(userRecord)
+        
+        user = userRecordSerializer.data
+        user['is_active'] = True
+        
+        return user
             
         
