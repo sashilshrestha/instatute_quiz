@@ -62,7 +62,7 @@ class QuestionBankController(APIView):
     def post(self,request):
         payloadData = request.data
         
-        questionRecords = QuestionBank.objects(questionSetId=payloadData['questionSetId'],question=payloadData['question'])
+        questionRecords = QuestionBank.objects(subjectId=payloadData['subjectId'],question=payloadData['question'])
         
         isQuestionAvailable = len(questionRecords) > 0
         
@@ -74,17 +74,18 @@ class QuestionBankController(APIView):
         if isApplicableOptions == False:
             return Response({'message':'Invalid options!'},status=status.HTTP_400_BAD_REQUEST)
         
-        questionBankInstance = QuestionBank(question=payloadData['question'],questionSetId=payloadData['questionSetId'],options=payloadData['options'],answers=payloadData['answers'])
+        questionBankInstance = QuestionBank(question=payloadData['question'],subjectId=payloadData['subjectId'],options=payloadData['options'],answer=payloadData['answer'])
         
         questionBankInstance.save()
+
         
         return Response({'message':"Success"},status=status.HTTP_200_OK)
 
 class QuestionDistributorController(APIView):
-    def get(self,request,subjectId,questionSetId):  
-        parsedQuestionSetId = ObjectId(questionSetId)
-
-        quizQuestions = QuestionBank.objects.exclude('questionSetId')(questionSetId=parsedQuestionSetId)  
+    def get(self,request,subjectId):  
+        parsedSubjectId = ObjectId(subjectId)
+        
+        quizQuestions = QuestionBank.objects.exclude('subjectId')(subjectId=parsedSubjectId)  
         
         isQuestionsAvailable = len(quizQuestions) > 0
         
@@ -94,15 +95,12 @@ class QuestionDistributorController(APIView):
         parsedSubjectId = ObjectId(subjectId)
         
         subjectRecord = Subject.objects.get(_id=parsedSubjectId)
-        questionSetRecord = QuestionSet.objects.exclude('subjectId').get(_id=parsedQuestionSetId)
         
         subjectSerializers = SubjectSerializers(subjectRecord)
-        questionSetSerializers = QuestionSetSerializers(questionSetRecord)
         quizQuestionsSerializers = QuestionBankSerializers(quizQuestions,many=True)
         
         data = {
             'subject' : subjectSerializers.data,
-            'questionSet': questionSetSerializers.data,
             'questions': quizQuestionsSerializers.data
         }
         

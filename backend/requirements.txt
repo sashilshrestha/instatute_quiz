@@ -5,3 +5,5 @@ django_mongoengine
 django-rest-framework-mongoengine
 djangorestframework-simplejwt  
 passlib
+django-cors-headers
+
