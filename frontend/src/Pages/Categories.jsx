@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react';
 import Modal from '../components/Modal';
 import Loading from '../components/Loading';
+import { BASE_URL } from '../consts/consts';
 
 export default function Categories() {
   const [categories, setCategories] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState({});
+  const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchTriviaData = async () => {
       try {
-        const response = await fetch('https://opentdb.com/api_category.php');
-        const data = await response.json();
-        setCategories(data.trivia_categories);
+        const endPoint = BASE_URL + '/quiz/subjects/';
+        const response = await fetch(endPoint);
+        const previewData = await response.json();
+        setCategories(previewData.data);
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching trivia data:', error);
@@ -24,8 +27,12 @@ export default function Categories() {
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
-    document.getElementById('my_modal_1').showModal();
+    setShowModal(true);
   };
+
+  useEffect(() => {
+    if (showModal) document.getElementById('my_modal_1').showModal();
+  }, [showModal]);
 
   if (isLoading)
     return (
@@ -64,7 +71,12 @@ export default function Categories() {
             ))}
         </div>
       </div>
-      <Modal category={selectedCategory} />
+      {showModal && (
+        <Modal
+          category={selectedCategory}
+          closeModal={() => setShowModal(false)}
+        />
+      )}
     </main>
   );
 }
