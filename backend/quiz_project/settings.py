@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_mongoengine',
     'rest_framework_mongoengine',
     'rest_framework_simplejwt',
+    'corsheaders',
     'user',
     'quiz'
 ]
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'user.middlewares.AuthMiddleware.AuthMiddleware'
 ]
 
@@ -138,3 +140,16 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     # Other configurations (optional)
 }
+
+CORS_ALLOWED_ORIGINS = [
+    'http://*',
+    'https://*',
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'PATCH'
+]

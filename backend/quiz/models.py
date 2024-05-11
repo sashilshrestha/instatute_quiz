@@ -22,10 +22,10 @@ class QuestionSet(Document):
        
 class QuestionBank(Document):
     _id = StringField(required=False)
-    questionSetId = ReferenceField(QuestionSet,required = True)  
+    subjectId = ReferenceField(Subject,required = True)  
     question = StringField()
     options =  ListField(StringField(),required=True)
-    answers= ListField(StringField(),required=True)
+    answer= IntField(required=True)
     createdAt = DateTimeField(default=datetime.datetime.now)
     updatedAt = DateTimeField(default=datetime.datetime.now)
 

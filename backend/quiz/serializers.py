@@ -15,11 +15,11 @@ class QuestionSetSerializers(serializers.DocumentSerializer):
         fields = ["_id","setNumber","subjectId","passMarks","totalRetries","marksPerQuestion"]
         
 class QuestionBankSerializers(serializers.DocumentSerializer):
-    questionSetId = QuestionSetSerializers()
+    subjectId = SubjectSerializers()
     
     class Meta:
         model = QuestionBank
-        fields = ["_id","questionSetId","question","options","answers"]
+        fields = ["_id","subjectId","question","options","answer"]
         
 class UserQuizSerializers(serializers.DocumentSerializer):
     questionSetId = QuestionSetSerializers()
