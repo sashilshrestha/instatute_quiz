@@ -1,9 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from quiz.models import Subject,QuestionSet,QuestionBank
-from quiz.serializers import SubjectSerializers,QuestionBankSerializers,QuestionSetSerializers
+from quiz.models import Subject,QuestionSet,QuestionBank,UserQuiz
+from quiz.serializers import SubjectSerializers,QuestionBankSerializers,QuestionSetSerializers,UserQuizSerializers
 from bson import ObjectId
+from user.models import User
 
 class SubjectController(APIView):
     def post(self,request):
@@ -106,3 +107,31 @@ class QuestionDistributorController(APIView):
         
         return Response({'message':'Success','data':data},status=status.HTTP_200_OK)
         
+
+class UserQuizController(APIView):
+    def post(self,request):
+        payloadData = request.data
+        # userPayload = request.User
+        # userId = request.user
+        score = UserQuiz(subjectId=payloadData['subjectId'],questionBankId=payloadData['questionBankId'],totalScores=payloadData['totalScores'],totalQuestions=payloadData['totalQuestions'])
+        score.save()
+        
+        return Response({'message':"Successfully saved score"},status=status.HTTP_200_OK) 
+    
+    
+class UserScoreController(APIView):
+    def get(self,request, questionBankId):
+        parsedQuestionId = ObjectId(questionBankId)
+        # scores = UserQuiz.objects.exclude('questionBankId')(questionBankId=parsedQuestionId)
+        scoreRecord = UserQuiz.objects.get(questionBankId=parsedQuestionId)
+        
+        # questionBankSerializers = QuestionBankSerializers(scoreRecord)
+        userQuizSerializers = UserQuizSerializers(scoreRecord,many=True)
+        
+        data = {
+            # 'questions' : questionBankSerializers.data,
+            'scores': userQuizSerializers.data
+        }
+        
+        return Response({'message':'Success','data':data},status=status.HTTP_200_OK)
+        # return Response({'message':'Success','data':data},status=status.HTTP_200_OK)

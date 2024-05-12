@@ -22,9 +22,10 @@ class QuestionBankSerializers(serializers.DocumentSerializer):
         fields = ["_id","subjectId","question","options","answer"]
         
 class UserQuizSerializers(serializers.DocumentSerializer):
-    questionSetId = QuestionSetSerializers()
+    questionBankId = QuestionBankSerializers()
      
     class Meta:
         model = UserQuiz
-        fields = ["_id","userId","questionSetId","totalScores","totalAttempts"]
+        # fields = ["_id","userId","questionBankId","totalScores","totalQuestions"]
+        fields = ["_id","questionBankId","totalScores","totalQuestions"]
          
