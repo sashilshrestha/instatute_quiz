@@ -5,12 +5,16 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate(); // useNavigate hook for navigation
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
-    console.log('Email:', email);
-    console.log('Password:', password);
+    if (!email || !password) {
+      setError('Please provide both email and password.');
+      return;
+    }
+    setError(''); // Clear any previous error
     login(); // Call login function after form submission
   };
 
@@ -25,18 +29,25 @@ const Login = () => {
   async function login() {
     console.warn(email, password);
     let item = { email, password };
-    let result = await fetch("http://127.0.0.1:8000/api/user/login", {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(item)
-    });
-    result = await result.json();
-    localStorage.setItem("user-info", JSON.stringify(result));
-    // Navigate to /dashboard after successful login
-    navigate('/dashboard');
+    try {
+      let result = await fetch("http://127.0.0.1:8000/api/user/login", {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(item)
+      });
+      if (!result.ok) {
+        throw new Error('Login failed. Please check your credentials.');
+      }
+      result = await result.json();
+      localStorage.setItem("user-info", JSON.stringify(result));
+      // Navigate to /dashboard after successful login
+      navigate('/dashboard');
+    } catch (error) {
+      setError(error.message);
+    }
   }
 
   return (
@@ -48,6 +59,7 @@ const Login = () => {
               <img src={Logo} alt="" className="w-24" />
             </div>
             <h2 className="text-2xl font-semibold mb-2 text-center">Login</h2>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={submitForm}>
               <div className="mb-4">
                 <div className={`form-control w-full`}>
@@ -59,7 +71,7 @@ const Login = () => {
                     type={'text'}
                     value={email}
                     placeholder={''}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={updateEmail}
                     className="input input-bordered w-full"
                   />
                 </div>
@@ -72,7 +84,7 @@ const Login = () => {
                     type={'password'}
                     value={password}
                     placeholder={''}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={updatePassword}
                     className="input input-bordered w-full"
                   />
                 </div>
