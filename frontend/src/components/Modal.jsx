@@ -1,7 +1,49 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { BASE_URL } from '../consts/consts';
 
-const Modal = ({ category }) => {
+const Modal = ({ category, closeModal }) => {
+  const [totalQuestions, setTotalQuestions] = useState(null);
+  const fetchTriviaData = async () => {
+    try {
+      const endPoint = BASE_URL + '/quiz/distributeQuestions/';
+      console.log(category['_id']);
+      const response = await fetch(`${endPoint}${category['_id']}/`);
+      const previewData = await response.json();
+
+      setTotalQuestions(previewData.data.questions.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTriviaData();
+  }, []);
+
+  if (!totalQuestions)
+    return (
+      <div>
+        <dialog id="my_modal_1" className="modal">
+          <div className="modal-box p-14">
+            <div>
+              <div className="flex justify-center items-center flex-col mb-6">
+                <img
+                  src="https://static.thenounproject.com/png/75231-200.png"
+                  alt=""
+                />
+                <h1 className="font-bold text-2xl">No Questions Found.</h1>
+              </div>
+              <div className="flex justify-end">
+                <button className="btn btn-outline" onClick={closeModal}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      </div>
+    );
   return (
     <div>
       <dialog id="my_modal_1" className="modal">
@@ -22,7 +64,7 @@ const Modal = ({ category }) => {
                 <div>Total Time:</div>
               </span>
               <span>
-                <div>10</div>
+                <div>{totalQuestions}</div>
                 <div>10 Minutes</div>
               </span>
             </div>
@@ -31,12 +73,14 @@ const Modal = ({ category }) => {
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <Link
-                to={`/quiz/${category.id}`}
+                to={`/quiz/${category['_id']}`}
                 onClick={() => document.getElementById('my_modal_1').close()}
               >
                 <button className="btn btn-primary mr-3">Start Quiz</button>
               </Link>
-              <button className="btn btn-outline">Cancel</button>
+              <button className="btn btn-outline" onClick={closeModal}>
+                Cancel
+              </button>
             </form>
           </div>
         </div>

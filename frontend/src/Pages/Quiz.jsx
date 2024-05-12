@@ -6,12 +6,14 @@ import Questions from '../components/Questions';
 import Finish from './Finish';
 import Alert from '../components/Alert';
 import ProgressBar from '../components/ProgressBar';
+import { BASE_URL } from '../consts/consts';
 
 const initialState = {
   questions: [],
   status: 'loading',
   index: 0,
   selectedOption: null,
+  score: 0,
 };
 
 const reducer = (state, action) => {
@@ -62,41 +64,39 @@ const reducer = (state, action) => {
         ...state,
         selectedOption: action.payload,
       };
+
+    case 'setScore':
+      return {
+        ...state,
+        score: state.score + action.payload,
+      };
     default:
       throw new Error('Action Unknown');
   }
 };
 
-const shuffleArray = (array) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-};
-
-const rearrangeAnswers = (correctAnswer, incorrectAnswers) => {
-  const allAnswers = [correctAnswer, ...incorrectAnswers];
-  return shuffleArray(allAnswers);
-};
-
 const Quiz = () => {
-  const [{ status, questions, index, selectedOption }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ status, questions, index, selectedOption, score }, dispatch] =
+    useReducer(reducer, initialState);
   const [showAlert, setShowAlert] = useState(false);
 
   const { categoryId } = useParams();
 
   const navigate = useNavigate();
+
   const [secondsLeft, setSecondsLeft] = useState(600);
+
+  const setScore = () => {
+    if (questions[index].answer === selectedOption)
+      dispatch({ type: 'setScore', payload: 10 });
+  };
 
   const nextBtn = () => {
     if (index === 9) dispatch({ type: 'lastQuestion' });
 
     if (selectedOption !== null) {
       dispatch({ type: 'nextQuestion' });
+      setScore();
       setShowAlert(false);
     } else {
       setShowAlert(true);
@@ -106,30 +106,19 @@ const Quiz = () => {
 
   const formattedTime = format(new Date(0, 0, 0, 0, 0, secondsLeft), 'mm:ss');
 
+  const fetchTriviaData = async () => {
+    try {
+      const endPoint = BASE_URL + '/quiz/distributeQuestions/';
+      const response = await fetch(`${endPoint}${categoryId}/`);
+      const previewData = await response.json();
+
+      dispatch({ type: 'dataReceived', payload: previewData.data.questions });
+    } catch (error) {
+      dispatch({ type: 'dataFailed' });
+    }
+  };
+
   useEffect(() => {
-    const fetchTriviaData = async () => {
-      try {
-        const response = await fetch(
-          `https://opentdb.com/api.php?amount=10&type=multiple&category=${categoryId}`
-        );
-        const data = await response.json();
-
-        const organizedData = data.results.map((item) => {
-          return {
-            ...item,
-            options: rearrangeAnswers(
-              item.correct_answer,
-              item.incorrect_answers
-            ),
-          };
-        });
-
-        dispatch({ type: 'dataReceived', payload: organizedData });
-      } catch (error) {
-        dispatch({ type: 'dataFailed' });
-      }
-    };
-
     fetchTriviaData();
   }, []);
 
@@ -167,7 +156,7 @@ const Quiz = () => {
                   {index + 1}/{questions.length}
                 </p>
               </div>
-              <ProgressBar rate={((index + 1) / 10) * 100} />
+              <ProgressBar rate={((index + 1) / questions.length) * 100} />
               <Questions
                 data={questions[index]}
                 sendDataToParent={(option) =>
@@ -175,18 +164,22 @@ const Quiz = () => {
                 }
                 selectedIdx={selectedOption}
                 timeRemaining={formattedTime}
+                increaseScore={(option) => {
+                  dispatch({ type: 'setScore', payload: option });
+                }}
               />
             </main>
           )}
           {status === 'active' && (
             <div className="flex justify-end">
               <button className="btn-secondary btn" onClick={nextBtn}>
-                {index <= 8 ? 'Next' : 'Finish'}
+                {index + 1 < questions.length ? 'Next' : 'Finish'}
               </button>
             </div>
           )}
-          {status === 'finished' && <Finish />}
-
+          {status === 'finished' && (
+            <Finish score={score} totalScore={questions.length * 10} />
+          )}
           {showAlert && (
             <Alert>
               <div
