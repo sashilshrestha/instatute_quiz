@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import Logo from '../../public/Logo.png';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // useNavigate hook for navigation
 
   const submitForm = (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     console.log('Email:', email);
     console.log('Password:', password);
+    login(); // Call login function after form submission
   };
 
   const updateEmail = (e) => {
@@ -18,6 +21,23 @@ const Login = () => {
   const updatePassword = (e) => {
     setPassword(e.target.value);
   };
+
+  async function login() {
+    console.warn(email, password);
+    let item = { email, password };
+    let result = await fetch("http://127.0.0.1:8000/api/user/login", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(item)
+    });
+    result = await result.json();
+    localStorage.setItem("user-info", JSON.stringify(result));
+    // Navigate to /dashboard after successful login
+    navigate('/dashboard');
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center">
@@ -39,7 +59,7 @@ const Login = () => {
                     type={'text'}
                     value={email}
                     placeholder={''}
-                    onChange={updateEmail}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="input input-bordered w-full"
                   />
                 </div>
@@ -52,7 +72,7 @@ const Login = () => {
                     type={'password'}
                     value={password}
                     placeholder={''}
-                    onChange={updatePassword}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="input input-bordered w-full"
                   />
                 </div>
