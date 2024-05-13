@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 
+
 const TriviaApp = () => {
   const [triviaData, setTriviaData] = useState(null);
 
@@ -22,6 +23,7 @@ const TriviaApp = () => {
     fetchTriviaData();
   }, []);
 
+  
   return (
     <div className="drawer  lg:drawer-open">
       <input
@@ -66,6 +68,7 @@ const TriviaApp = () => {
                   <img
                     src="https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg"
                     alt="profile"
+                    
                   />
                 </div>
               </label>
@@ -73,6 +76,12 @@ const TriviaApp = () => {
                 tabIndex="0"
                 className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
               >
+              <li className="justify-between">
+               <Link to="/Profilecard">Profile Details</Link>
+                </li>
+              <div className="divider mt-0 mb-0"></div>
+              
+              
                 <li className="justify-between">
                   <Link to="/Profile">Profile settings</Link>
                 </li>
