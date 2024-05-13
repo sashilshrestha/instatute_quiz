@@ -1,5 +1,4 @@
 import React from 'react';
-import {Avatar} from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 function card(){
@@ -23,9 +22,9 @@ const user={
       </div>
       </label> */}
 
-      <Avatar className =" dark:text-black 100  bg-gray-300" size={90}>
+      {/* <Avatar className =" dark:text-black 100  bg-gray-300" size={90}> */}
         {user.fullname.split(" ").map(word => word.charAt(0).toUpperCase()).join("")}
-      </Avatar>
+      {/* </Avatar> */}
 
       <h1 className="text-2xm font-bold text-gray-900 dark:text-black-100">student@swinburne</h1>
 

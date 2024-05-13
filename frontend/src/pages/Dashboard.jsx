@@ -159,7 +159,7 @@ const Dashboard = () => {
           </div>
 
           <div className="card w-3/4 p-6 bg-base-100 shadow-xl mt-6">
-            <div className="text-xl font-bold">🎉 Global Top Score Ranking</div>
+            <div className="text-xl font-bold">🎉 Individual Top Score Ranking</div>
             <div className="divider mt-2"></div>
             <div className="h-full w-full bg-base-100">
               <div className="overflow-x-auto">
@@ -167,24 +167,24 @@ const Dashboard = () => {
                   <thead className="text-md">
                     <tr>
                       <th>🏆 Rank</th>
-                      <th className="normal-case">🎖️ Username</th>
-                      <th className="normal-case">🏅 Quiz Category</th>
+                      <th className="normal-case">🎖️ Category</th>
+                      <th className="normal-case">🏅 Points</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <th>1st</th>
-                      <td>Facebook Ads</td>
+                      <td>Mathematics</td>
                       <td>26,345</td>
                     </tr>
                     <tr>
                       <th>2nd</th>
-                      <td>Google Ads</td>
+                      <td>Geopgraphy</td>
                       <td>21,341</td>
                     </tr>
                     <tr>
                       <th>3rd</th>
-                      <td>Instagram Ads</td>
+                      <td>Computer Sciences</td>
                       <td>34,379</td>
                     </tr>
                     <tr>
@@ -203,7 +203,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="h-16"></div>
+        <div className="h-16"></div>  
       </main>
     </>
   );
