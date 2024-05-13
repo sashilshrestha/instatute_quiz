@@ -7,6 +7,7 @@ from .serializers import UserSerializers
 from passlib.hash import pbkdf2_sha256
 from .utils import createAccessToken
 from quiz_project.consts import GENERIC_MESSAGES
+from user.middlewares.AuthMiddleware import verifyUser
 
 class UserListCreate(generics.ListCreateAPIView):
     def post(self,request):
@@ -74,5 +75,16 @@ class Register(APIView):
         except Exception as e:  
             return Response({'message':e.message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+class UserProfileController(APIView):
+    @verifyUser
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)    
+
+    def get(self,request):
+        user = request.user
+        
+        del user['password']
+        
+        return Response({'message':GENERIC_MESSAGES['SUCCESS'],'data':user},status=status.HTTP_200_OK)
         
         
