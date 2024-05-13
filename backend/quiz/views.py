@@ -109,31 +109,6 @@ class QuestionDistributorController(APIView):
 
 
 class UserQuizController(APIView):
-    # def post(self, request):
-    #     payloadData = request.data
-    #     # Ensure the userId is present in the payloadData
-    #     user_id = payloadData.get('userId')
-    #     if not user_id:
-    #         return Response({'message': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-        
-    #     try:
-    #         # Query the User model from the user app to find the user
-    #         user = User.objects.get(_id=user_id)
-    #     except User.DoesNotExist:
-    #         # If user is not found, return appropriate response
-    #         return Response({'message': f'User with ID {user_id} not found'}, status=status.HTTP_404_NOT_FOUND)
-        
-    #     # Create UserQuiz instance with the found user
-    #     score = UserQuiz(
-    #         userId=user,
-    #         subjectId=payloadData['subjectId'],
-    #         questionBankId=payloadData['questionBankId'],
-    #         totalScores=payloadData['totalScores'],
-    #         totalQuestions=payloadData['totalQuestions']
-    #     )
-    #     score.save()
-        
-    #     return Response({'message': "Successfully saved score"}, status=status.HTTP_200_OK)
     def post(self, request):
         payload_data = request.data
         
@@ -147,15 +122,25 @@ class UserQuizController(APIView):
         if not all([user_id, subject_id, total_scores, total_questions]):
             return Response({'message': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # user = User.objects.get(_id=user_id)
-        # try:
-        #     # Check if the user exists
-        #     user = User.objects.get(_id=user_id)
-        # except User.DoesNotExist:
-        #     return Response({'message': f'User with ID {user_id} not found'}, status=status.HTTP_404_NOT_FOUND)
-        
         try:
-            # Save the user quiz data
+            # Check if there is an existing UserQuiz object for the specified user and subject
+            existing_quiz = UserQuiz.objects.filter(userId=user_id, subjectId=subject_id).first()
+            
+            # If an existing quiz is found and the new score is higher, update the existing record
+            if existing_quiz and int(total_scores) > existing_quiz.totalScores:
+                existing_quiz.totalScores = total_scores
+                existing_quiz.totalQuestions = total_questions
+                # existing_quiz.save()
+                user_quiz = UserQuiz(
+                    userId=user_id,
+                    subjectId=subject_id,
+                    totalScores=total_scores,
+                    totalQuestions=total_questions
+                )
+                user_quiz.save()
+                return Response({'message': 'User quiz data updated successfully'}, status=status.HTTP_200_OK)
+            
+            # If no existing quiz is found or the new score is not higher, create a new UserQuiz object
             user_quiz = UserQuiz(
                 userId=user_id,
                 subjectId=subject_id,
@@ -163,30 +148,8 @@ class UserQuizController(APIView):
                 totalQuestions=total_questions
             )
             user_quiz.save()
+            
             return Response({'message': 'User quiz data saved successfully'}, status=status.HTTP_201_CREATED)
+        
         except Exception as e:
-            return Response({'message': f'Error saving user quiz data: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-    def get(self, request, user_id):
-        try:
-            user_quizzes = UserQuiz.objects.filter(userId=ObjectId(user_id))
-            
-            if user_quizzes:
-                sorted_user_quizzes = []
-                for user_quiz in user_quizzes:                  
-                    subject_name = user_quiz.subjectId.name
-                    sorted_user_quizzes.append({
-                        '_id': str(user_quiz._id),
-                        'totalScores': user_quiz.totalScores,
-                        'subject_name': subject_name
-                    })
-                
-                # Sort user quizzes by totalScores
-                sorted_user_quizzes = sorted(sorted_user_quizzes, key=lambda x: x['totalScores'], reverse=True)
-                
-                return Response({'sorted_user_quizzes': sorted_user_quizzes}, status=status.HTTP_200_OK)
-            else:
-                return Response({'message': f'No UserQuiz objects found for user with ID {user_id}'}, status=status.HTTP_404_NOT_FOUND)
-            
-        except UserQuiz.DoesNotExist:
-            return Response({'message': 'User quizzes not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'message': f'Error saving/updating user quiz data: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
