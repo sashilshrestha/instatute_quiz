@@ -29,14 +29,24 @@ class QuestionBank(Document):
     createdAt = DateTimeField(default=datetime.datetime.now)
     updatedAt = DateTimeField(default=datetime.datetime.now)
 
-    
 class UserQuiz(Document):
     _id = StringField(required=False)
-    # userId = ReferenceField(User,required=True)
-    subjectId = ReferenceField(Subject,required = True)
-    questionBankId = ReferenceField(QuestionBank,required=True)
+    userId = ReferenceField(User, required=True)
+    subjectId = ReferenceField(Subject, required=True)
+    questionBankId = ReferenceField(QuestionBank, required=True)
     totalScores = IntField(required=True)
     totalQuestions = IntField(required=True)
     createdAt = DateTimeField(default=datetime.datetime.now)
     updatedAt = DateTimeField(default=datetime.datetime.now)
+
+    
+# class UserQuiz(Document):
+#     _id = StringField(required=False)
+#     # userId = ReferenceField(User,required=True)
+#     subjectId = ReferenceField(Subject,required = True)
+#     questionBankId = ReferenceField(QuestionBank,required=True)
+#     totalScores = IntField(required=True)
+#     totalQuestions = IntField(required=True)
+#     createdAt = DateTimeField(default=datetime.datetime.now)
+#     updatedAt = DateTimeField(default=datetime.datetime.now)
  
