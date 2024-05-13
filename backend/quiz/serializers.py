@@ -27,5 +27,5 @@ class UserQuizSerializers(serializers.DocumentSerializer):
     class Meta:
         model = UserQuiz
         # fields = ["_id","userId","questionBankId","totalScores","totalQuestions"]
-        fields = ["_id","questionBankId","totalScores","totalQuestions"]
+        fields = ["_id","userId","subjectId","totalScores","totalQuestions"]
          

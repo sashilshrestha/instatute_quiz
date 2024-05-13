@@ -140,12 +140,11 @@ class UserQuizController(APIView):
         # Extract data from payload
         user_id = payload_data.get('userId')
         subject_id = payload_data.get('subjectId')
-        question_bank_id = payload_data.get('questionBankId')
         total_scores = payload_data.get('totalScores')
         total_questions = payload_data.get('totalQuestions')
         
         # Check if all required fields are present
-        if not all([user_id, subject_id, question_bank_id, total_scores, total_questions]):
+        if not all([user_id, subject_id, total_scores, total_questions]):
             return Response({'message': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
         
         # user = User.objects.get(_id=user_id)
@@ -160,7 +159,6 @@ class UserQuizController(APIView):
             user_quiz = UserQuiz(
                 userId=user_id,
                 subjectId=subject_id,
-                questionBankId=question_bank_id,
                 totalScores=total_scores,
                 totalQuestions=total_questions
             )
@@ -171,40 +169,24 @@ class UserQuizController(APIView):
     
     def get(self, request, user_id):
         try:
-            # Retrieve the user
-            # user = User.objects.get(_id=user_id)
-            user = UserQuiz.objects.get(userId=user_id)
+            user_quizzes = UserQuiz.objects.filter(userId=ObjectId(user_id))
             
-            # Aggregate top scores for each subject
-            top_scores = UserQuiz.objects.filter(userId=user).values('subjectId').annotate(top_score=Max('totalScores'))
+            if user_quizzes:
+                sorted_user_quizzes = []
+                for user_quiz in user_quizzes:                  
+                    subject_name = user_quiz.subjectId.name
+                    sorted_user_quizzes.append({
+                        '_id': str(user_quiz._id),
+                        'totalScores': user_quiz.totalScores,
+                        'subject_name': subject_name
+                    })
+                
+                # Sort user quizzes by totalScores
+                sorted_user_quizzes = sorted(sorted_user_quizzes, key=lambda x: x['totalScores'], reverse=True)
+                
+                return Response({'sorted_user_quizzes': sorted_user_quizzes}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': f'No UserQuiz objects found for user with ID {user_id}'}, status=status.HTTP_404_NOT_FOUND)
             
-            # Retrieve subject names based on subject IDs
-            subject_names = {}
-            for score in top_scores:
-                subject_id = score['subjectId']
-                subject_name = Subject.objects.get(_id=subject_id).name
-                subject_names[subject_id] = subject_name
-            
-            # Prepare response data
-            response_data = []
-            for score in top_scores:
-                subject_id = score['subjectId']
-                subject_name = subject_names[subject_id]
-                top_score = score['top_score']
-                response_data.append({'subjectId': subject_id, 'subjectName': subject_name, 'topScore': top_score})
-            
-            return Response({'message': 'Success', 'data': response_data}, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({'message': f'User with ID {user_id} not found'}, status=status.HTTP_404_NOT_FOUND)
-    # def get(self, request, user_id):
-    #     try:
-    #         # Query the User model from the user app to find the user
-    #         # user = User.objects.get(_id=user_id)
-    #         user = UserQuiz.objects.get(userId=user_id)
-    #         # Filter UserQuiz instances based on the found user
-    #         user_quiz = UserQuiz.objects.filter(userId=user)
-    #         user_quiz_serializer = UserQuizSerializers(user_quiz, many=True)
-    #         return Response({'message': 'Success', 'data': user_quiz_serializer.data}, status=status.HTTP_200_OK)
-    #     except User.DoesNotExist:
-    #         # If user is not found, return appropriate response
-    #         return Response({'message': f'User with ID {user_id} not found'}, status=status.HTTP_404_NOT_FOUND)
+        except UserQuiz.DoesNotExist:
+            return Response({'message': 'User quizzes not found'}, status=status.HTTP_404_NOT_FOUND)
