@@ -8,6 +8,7 @@ import Categories from '../pages/Categories';
 import Quiz from '../pages/Quiz';
 import QuizTimeout from '../pages/QuizTimeout';
 import Profile from '../pages/Profile';
+import ProfileCard from '../pages/ProfileCard';
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
         path: 'profile',
         element: <Profile/>,
       },
+      {
+        path: 'profilecard',
+        element: <ProfileCard/>,
+      },
     ],
   },
   {
@@ -51,4 +56,5 @@ export const router = createBrowserRouter([
     path: 'timeout',
     element: <QuizTimeout />,
   },
+  
 ]);

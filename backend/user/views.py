@@ -55,7 +55,6 @@ class Register(APIView):
         try:
            payloadData = request.data
            
-        
            # Payloads
            email = payloadData.get("email") or None
            password = payloadData.get("password") or None
@@ -74,5 +73,17 @@ class Register(APIView):
         except Exception as e:  
             return Response({'message':e.message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+class UserProfileController(APIView):
+    
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)    
+
+    def get(self,request):
+        user = request.user
         
+        del user['password']
+        
+        return Response({'message':GENERIC_MESSAGES['SUCCESS'],'data':user},status=status.HTTP_200_OK)
+    
+
         
