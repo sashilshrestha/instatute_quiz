@@ -10,7 +10,7 @@ export default function Categories() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTriviaData = async () => {
+    const fetchCategory = async () => {
       try {
         const endPoint = BASE_URL + '/quiz/subjects/';
         const response = await fetch(endPoint);
@@ -22,7 +22,7 @@ export default function Categories() {
       }
     };
 
-    fetchTriviaData();
+    fetchCategory();
   }, []);
 
   const handleCategoryClick = (category) => {

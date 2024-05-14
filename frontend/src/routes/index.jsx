@@ -10,23 +10,13 @@ import Quiz from '../pages/Quiz';
 import QuizTimeout from '../pages/QuizTimeout';
 import Profile from '../pages/Profile';
 import ProfileCard from '../pages/ProfileCard';
+import AddCategory from '../pages/AddCategory';
+import AddQuestions from '../pages/AddQuestions';
 
 const isAuthenticated = () => {
-  // Implement your authentication logic here
-  // For example, check if the user is logged in
-  // Get data from localStorage
   const userInfo = localStorage.getItem('user-info');
-  console.log('checked');
-  return true;
-
-  // Check if userInfo exists
-  if (userInfo) {
-    const userInfoObj = JSON.parse(userInfo);
-
-    if (userInfoObj.message === 'SUCCESS') return true;
-  } else {
-    return true;
-  }
+  // Check if userInfo exists and contains valid information
+  return userInfo !== null && userInfo !== undefined && userInfo !== '';
 };
 
 const ProtectedRoute = ({ element, ...rest }) => {
@@ -67,6 +57,14 @@ export const router = createBrowserRouter([
       {
         path: 'profilecard',
         element: <ProtectedRoute element={<ProfileCard />} />,
+      },
+      {
+        path: 'add-categories',
+        element: <ProtectedRoute element={<AddCategory />} />,
+      },
+      {
+        path: 'add-questions',
+        element: <ProtectedRoute element={<AddQuestions />} />,
       },
     ],
   },
