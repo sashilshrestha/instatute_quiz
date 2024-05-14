@@ -1,53 +1,50 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import Logo from '../../public/Logo.png';
+import axios from 'axios';
+import { BASE_URL } from '../consts/consts';
 
 const Register = () => {
-  const [Firstname, SetFirstname] = useState('');
-  const [Lastname, SetLastname] = useState('');
-  const [Username, SetUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [userDetails, setUserDetails] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const submitForm = (e) => {
-    e.preventDefault();
+  const handleChange = (e, field) => {
+    const { name, value } = e.target;
+    console.log(name, value);
 
-    //Log email and password
-    console.log('Firstname:', Firstname);
-    console.log('Lastname:', Lastname);
-    console.log('Username:', Username);
-    console.log('email:', email);
-    console.log('password', password);
-
-    //Reset form fields
-    SetFirstname('');
-    SetLastname('');
-    SetUsername('');
-    setEmail('');
-    setPassword('');
+    setUserDetails({
+      ...userDetails,
+      [field]: value,
+    });
   };
 
-  const updateFirstname = (e) => {
-    SetFirstname(e.target.value);
-  };
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
 
-  const updateLastname = (e) => {
-    SetLastname(e.target.value);
-  };
+      setIsLoading(true);
 
-  const updateUsername = (e) => {
-    SetUsername(e.target.value);
-  };
+      const endPoint = BASE_URL + '/user/register';
 
-  const updateEmail = (e) => {
-    setEmail(e.target.value);
-  };
+      await axios.post(endPoint, userDetails, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-  const updatePassword = (e) => {
-    setPassword(e.target.value);
+      window.location.reload();
+    } catch (err) {
+      console.log(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center">
+    <div className="min-h-screen bg-gray-50 flex items-center">
       <div className="card mx-auto w-full max-w-2xl shadow-xl">
         <div className="bg-base-100 rounded-xl">
           <div className="py-24 px-10">
@@ -57,49 +54,22 @@ const Register = () => {
             <h2 className="text-2xl font-semibold mb-2 text-center">
               Registration Form
             </h2>
-            <form onSubmit={(e) => submitForm(e)}>
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <div className={`form-control w-full`}>
                   <label className="label">
                     <span className={'label-text text-base-content '}>
-                      Firstname
+                      Fullname
                     </span>
                   </label>
                   <input
-                    type={'Firstname'}
-                    value={Firstname}
-                    onChange={updateFirstname}
+                    type="text"
+                    value={userDetails.fullName}
+                    onChange={(e) => handleChange(e, 'fullName')}
                     className="input  input-bordered w-full "
                   />
                 </div>
 
-                <div className={`form-control w-full`}>
-                  <label className="label">
-                    <span className={'label-text text-base-content '}>
-                      Lastname
-                    </span>
-                  </label>
-                  <input
-                    type={'Lastname'}
-                    value={Lastname}
-                    onChange={updateLastname}
-                    className="input  input-bordered w-full "
-                  />
-                </div>
-
-                <div className={`form-control w-full`}>
-                  <label className="label">
-                    <span className={'label-text text-base-content '}>
-                      Username
-                    </span>
-                  </label>
-                  <input
-                    type={'Username'}
-                    value={Username}
-                    onChange={updateUsername}
-                    className="input  input-bordered w-full "
-                  />
-                </div>
                 <div className={`form-control w-full`}>
                   <label className="label">
                     <span className={'label-text text-base-content '}>
@@ -107,9 +77,9 @@ const Register = () => {
                     </span>
                   </label>
                   <input
-                    type={'text'}
-                    value={email}
-                    onChange={updateEmail}
+                    type="text"
+                    value={userDetails.email}
+                    onChange={(e) => handleChange(e, 'email')}
                     className="input  input-bordered w-full "
                   />
                 </div>
@@ -120,17 +90,21 @@ const Register = () => {
                     </span>
                   </label>
                   <input
-                    type={'password'}
-                    value={password}
-                    onChange={updatePassword}
+                    type="password"
+                    value={userDetails.password}
+                    onChange={(e) => handleChange(e, 'password')}
                     className="input  input-bordered w-full "
                   />
                 </div>
               </div>
 
-              <button type="submit" className={'btn mt-2 w-full btn-primary'}>
-                Register
-              </button>
+              {isLoading ? (
+                <p>Loading</p>
+              ) : (
+                <button type="submit" className={'btn mt-2 w-full btn-primary'}>
+                  Register
+                </button>
+              )}
 
               <div className="text-center mt-4">
                 Already have an account?{' '}

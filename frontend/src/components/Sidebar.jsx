@@ -1,13 +1,13 @@
-import { Link } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import Logo from '../../public/Logo.png';
 
 const Sidebar = () => {
   return (
     <div className="drawer-side  z-30  ">
       <label htmlFor="left-sidebar-drawer" className="drawer-overlay"></label>
-      <ul className="menu  pt-2 w-80 bg-base-100 min-h-full   text-base-content">
+      <ul className="menu pt-2 w-80 bg-base-100 min-h-full text-base-content gap-2">
         <li className="mb-2 font-semibold text-xl">
-          <a href="/app/welcome">
+          <Link to="/dashboard">
             <img
               className="mask mask-squircle w-10"
               src={Logo}
@@ -31,10 +31,10 @@ const Sidebar = () => {
                 ></path>
               </svg>
             </button>
-          </a>{' '}
+          </Link>
         </li>
         <li className="">
-          <div>
+          <NavLink to="/dashboard">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -50,12 +50,12 @@ const Sidebar = () => {
                 d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
               ></path>
             </svg>
-            <Link to="/dashboard">Dashboard</Link>
-          </div>
+            Dashboard
+          </NavLink>
         </li>
 
         <li className="">
-          <div>
+          <NavLink to="/categories">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -71,26 +71,11 @@ const Sidebar = () => {
                 d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
               ></path>
             </svg>
-            <Link to="/documentation">Documentation</Link>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-              className="w-5 h-5 mt-1 float-right delay-400 duration-500 transition-all  "
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              ></path>
-            </svg>
-          </div>
+            Category
+          </NavLink>
         </li>
 
-        <li className="">
+        <li className="hidden">
           <a className="font-normal" href="/app/dashboard">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -113,21 +98,6 @@ const Sidebar = () => {
               ></path>
             </svg>
             Settings
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-              className="w-5 h-5 mt-1 float-right delay-400 duration-500 transition-all  "
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              ></path>
-            </svg>
           </a>
         </li>
       </ul>

@@ -4,5 +4,5 @@ from .models import User
 class UserSerializers(serializers.DocumentSerializer):
     class Meta:
         model = User
-        fields = ["email","fullname","createdAt","updatedAt","password","_id"]
+        fields = ["email","fullname","createdAt","updatedAt","password","_id","is_superuser"]
     
