@@ -56,7 +56,6 @@ class Register(APIView):
         try:
            payloadData = request.data
            
-        
            # Payloads
            email = payloadData.get("email") or None
            password = payloadData.get("password") or None
@@ -87,4 +86,24 @@ class UserProfileController(APIView):
         
         return Response({'message':GENERIC_MESSAGES['SUCCESS'],'data':user},status=status.HTTP_200_OK)
         
+class ChangePasswordController(APIView):
+    @verifyUser
+    def put(self,request):
+        payloadData = request.data
+        user = request.user
         
+        isCorrectPassword = pbkdf2_sha256.verify(payloadData['currentPassword'],user.password)
+        
+        if isCorrectPassword == False:
+            return Response({'message':'Invalid current password!'},status=status.HTTP_400_BAD_REQUEST)
+        
+        isNewPasswordMatched = payloadData['password'] == payloadData['confirmPassword']
+        
+        if isNewPasswordMatched == False:
+            return Response({'message':'Password mismatched!'},status=status.HTTP_400_BAD_REQUEST)
+        
+        hashedPassword = pbkdf2_sha256.hash(payloadData['password'])
+        
+        User.objects(email=user['email']).update_one(password=hashedPassword)
+        
+        return Response({'message':'Password changed!'},status=status.HTTP_200_OK)
