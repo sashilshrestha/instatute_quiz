@@ -132,7 +132,7 @@ const ProjectRoute = () => (
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/categories" element={<Categories />} />
       <Route path="/quiz" element={<Quiz />} />
-      <Route path="/:categoryId" element={<Quiz />} />
+      <Route path="/quiz/:categoryId" element={<Quiz />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/profilecard" element={<ProfileCard />} />
     </Route>
