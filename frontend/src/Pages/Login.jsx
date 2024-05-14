@@ -27,7 +27,6 @@ const Login = () => {
   };
 
   async function login() {
-    console.warn(email, password);
     let item = { email, password };
     try {
       let result = await fetch('http://127.0.0.1:8000/api/user/login', {
@@ -43,9 +42,7 @@ const Login = () => {
       }
       result = await result.json();
       localStorage.setItem('user-info', JSON.stringify(result));
-      // Navigate to /dashboard after successful login
       navigate('/dashboard');
-      console.log('Looeg in');
     } catch (error) {
       setError(error.message);
     }
