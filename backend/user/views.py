@@ -7,6 +7,7 @@ from .serializers import UserSerializers
 from passlib.hash import pbkdf2_sha256
 from .utils import createAccessToken
 from quiz_project.consts import GENERIC_MESSAGES
+from user.middlewares.AuthMiddleware import verifyUser
 
 class UserListCreate(generics.ListCreateAPIView):
     def post(self,request):
@@ -73,7 +74,7 @@ class Register(APIView):
             return Response({'message':e.message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class UserProfileController(APIView):
-    
+    @verifyUser
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)    
 
@@ -83,6 +84,25 @@ class UserProfileController(APIView):
         del user['password']
         
         return Response({'message':GENERIC_MESSAGES['SUCCESS'],'data':user},status=status.HTTP_200_OK)
-    
-
         
+class ChangePasswordController(APIView):
+    @verifyUser
+    def put(self,request):
+        payloadData = request.data
+        user = request.user
+        
+        isCorrectPassword = pbkdf2_sha256.verify(payloadData['currentPassword'],user.password)
+        
+        if isCorrectPassword == False:
+            return Response({'message':'Invalid current password!'},status=status.HTTP_400_BAD_REQUEST)
+        
+        isNewPasswordMatched = payloadData['password'] == payloadData['confirmPassword']
+        
+        if isNewPasswordMatched == False:
+            return Response({'message':'Password mismatched!'},status=status.HTTP_400_BAD_REQUEST)
+        
+        hashedPassword = pbkdf2_sha256.hash(payloadData['password'])
+        
+        User.objects(email=user['email']).update_one(password=hashedPassword)
+        
+        return Response({'message':'Password changed!'},status=status.HTTP_200_OK)

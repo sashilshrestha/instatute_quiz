@@ -5,6 +5,7 @@ from quiz.models import Subject,QuestionSet,QuestionBank,UserQuiz
 from quiz.serializers import SubjectSerializers,QuestionBankSerializers,QuestionSetSerializers,UserQuizSerializers
 from bson import ObjectId
 from user.models import User
+from user.middlewares.AuthMiddleware import verifyUser
 
 class SubjectController(APIView):
     def post(self,request):
@@ -190,3 +191,105 @@ class UserQuizController(APIView):
             
         except UserQuiz.DoesNotExist:
             return Response({'message': 'User quizzes not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class UserDashboardController(APIView):
+    def get(self,request,userId):
+        categories = Subject.objects().count()
+        
+        questionsPipeline = [
+            {
+              "$group" : {
+                  "_id": "subjectId",
+                  "count": {"$sum":1}
+              }
+            },
+            {
+                "$match": {
+                    "count": {
+                        "$gt":0
+                    }
+                }
+            }
+        ]
+        
+        categoriesWithQuestions = QuestionBank.objects.aggregate(questionsPipeline)
+        
+        
+        totalScorePipeline = [
+            {
+                "$match": {
+                    "userId": ObjectId(userId)
+                }
+            },
+            {
+            "$group": {
+                "_id": "userId",
+                "totalScores": {"$sum": "$totalScores"}
+            }
+            }
+            ]
+        
+        userTotalScorePipeline = UserQuiz.objects().aggregate(totalScorePipeline)
+        
+        highestScoresPipeline = [
+            {
+                "$match":{
+                    "userId": ObjectId(userId)
+                }
+            },
+            {
+                "$group": {
+                    "_id": "$subjectId",
+                    "highestMarks": {"$max":"$totalScores"}
+                }
+            },
+            {
+                "$lookup": {
+                    "from":"subject",
+                    "localField":"_id",
+                    "foreignField":"_id",
+                    "as":"subject"
+                }
+            },
+            {
+                "$unwind":"$subject"
+            },
+            {
+                "$project":{
+                    "subject.name":1,
+                    "highestMarks":1,
+                    "_id":0
+                }
+            }
+        ]
+        
+        highestScoresByCourse = UserQuiz.objects().aggregate(highestScoresPipeline)
+        
+        totalQuizWithQuestions = 0    
+        userTotalScore = 0
+        subjectHighest = []
+        
+        for c in categoriesWithQuestions:
+            totalQuizWithQuestions = c['count']
+            
+        for score in userTotalScorePipeline:
+            userTotalScore = score['totalScores']  
+              
+        for highScore in highestScoresByCourse:
+            subjectHighest.append(highScore)  
+            
+        totalQuestions = QuestionBank.objects().count()
+        
+        response = {
+            "totalCategories" : categories,
+            "totalQuizWithQuestions": totalQuizWithQuestions,
+            "totalQuestions": totalQuestions,
+            "userTotalScore": userTotalScore,
+            "totalMarks": totalQuestions * 10,
+            "subjectHighest": subjectHighest
+        }
+        
+        return Response({"message":"Success","data":response},status=status.HTTP_200_OK)
+        
+        
+        
