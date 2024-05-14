@@ -1,4 +1,5 @@
-import { createBrowserRouter } from 'react-router-dom';
+import React from 'react';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from '../App';
 import ErrorPage from '../pages/Error';
 import Dashboard from '../pages/Dashboard';
@@ -10,6 +11,31 @@ import QuizTimeout from '../pages/QuizTimeout';
 import Profile from '../pages/Profile';
 import ProfileCard from '../pages/ProfileCard';
 
+const isAuthenticated = () => {
+  // Implement your authentication logic here
+  // For example, check if the user is logged in
+  // Get data from localStorage
+  const userInfo = localStorage.getItem('user-info');
+  console.log('checked');
+  return true;
+
+  // Check if userInfo exists
+  if (userInfo) {
+    const userInfoObj = JSON.parse(userInfo);
+
+    if (userInfoObj.message === 'SUCCESS') return true;
+  } else {
+    return true;
+  }
+};
+
+const ProtectedRoute = ({ element, ...rest }) => {
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" />;
+  }
+  return React.cloneElement(element, rest);
+};
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -18,29 +44,29 @@ export const router = createBrowserRouter([
     children: [
       {
         path: 'dashboard',
-        element: <Dashboard />,
+        element: <ProtectedRoute element={<Dashboard />} />,
       },
       {
         path: 'categories',
-        element: <Categories />,
+        element: <ProtectedRoute element={<Categories />} />,
       },
       {
         path: 'quiz',
-        element: <Quiz />,
+        element: <ProtectedRoute element={<Quiz />} />,
         children: [
           {
             path: ':categoryId',
-            element: <Quiz />,
+            element: <ProtectedRoute element={<Quiz />} />,
           },
         ],
-      }, 
+      },
       {
         path: 'profile',
-        element: <Profile/>,
+        element: <ProtectedRoute element={<Profile />} />,
       },
       {
         path: 'profilecard',
-        element: <ProfileCard/>,
+        element: <ProtectedRoute element={<ProfileCard />} />,
       },
     ],
   },
@@ -56,5 +82,4 @@ export const router = createBrowserRouter([
     path: 'timeout',
     element: <QuizTimeout />,
   },
-  
 ]);
