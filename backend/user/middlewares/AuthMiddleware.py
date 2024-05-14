@@ -1,6 +1,8 @@
 from user.utils import decodeToken
 from user.models import User
 from user.serializers import UserSerializers
+from functools import wraps
+from rest_framework.response import Response
 
 class AuthMiddleware():
     def __init__(self,get_response):
@@ -46,3 +48,14 @@ class AuthMiddleware():
         return user
             
         
+def verifyUser(viewFunc):
+    @wraps(viewFunc)
+    
+    def wrapper(request, *args, **kwargs):
+        drf_request = request.request
+        print("Inside decorator (DRF):", drf_request.user)
+        if drf_request.user:
+            return viewFunc(request, *args, **kwargs)
+        else:
+            return Response({'message': 'Unauthorized'}, status=401)
+    return wrapper

@@ -5,6 +5,7 @@ from quiz.models import Subject,QuestionSet,QuestionBank,UserQuiz
 from quiz.serializers import SubjectSerializers,QuestionBankSerializers,QuestionSetSerializers,UserQuizSerializers
 from bson import ObjectId
 from user.models import User
+from user.middlewares.AuthMiddleware import verifyUser
 
 class SubjectController(APIView):
     def post(self,request):

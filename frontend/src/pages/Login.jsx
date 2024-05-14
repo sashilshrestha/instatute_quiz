@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
-import Logo from '../../public/Logo.png';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import Logo from "../../public/Logo.png";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate(); // useNavigate hook for navigation
 
   const submitForm = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
+
     if (!email || !password) {
-      setError('Please provide both email and password.');
+      setError("Please provide both email and password.");
       return;
     }
-    setError(''); // Clear any previous error
+    setError(""); // Clear any previous error
     login(); // Call login function after form submission
   };
 
@@ -29,16 +30,16 @@ const Login = () => {
   async function login() {
     let item = { email, password };
     try {
-      let result = await fetch('http://127.0.0.1:8000/api/user/login', {
-        method: 'POST',
+      let result = await fetch("http://127.0.0.1:8000/api/user/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify(item),
       });
       if (!result.ok) {
-        throw new Error('Login failed. Please check your credentials.');
+        throw new Error("Login failed. Please check your credentials.");
       }
       result = await result.json();
       localStorage.setItem('user-info', JSON.stringify(result));
@@ -63,12 +64,12 @@ const Login = () => {
                 <div className={`form-control w-full`}>
                   <label className="label">
                     Email / UserName
-                    <span className={'label-text text-base-content'}></span>
+                    <span className={"label-text text-base-content"}></span>
                   </label>
                   <input
-                    type={'text'}
+                    type={"text"}
                     value={email}
-                    placeholder={''}
+                    placeholder={""}
                     onChange={updateEmail}
                     className="input input-bordered w-full"
                   />
@@ -76,18 +77,18 @@ const Login = () => {
                 <div className={`form-control w-full`}>
                   <label className="label">
                     Password
-                    <span className={'label-text text-base-content'}></span>
+                    <span className={"label-text text-base-content"}></span>
                   </label>
                   <input
-                    type={'password'}
+                    type={"password"}
                     value={password}
-                    placeholder={''}
+                    placeholder={""}
                     onChange={updatePassword}
                     className="input input-bordered w-full"
                   />
                 </div>
               </div>
-              <button type="submit" className={'btn mt-2 w-full btn-primary'}>
+              <button type="submit" className={"btn mt-2 w-full btn-primary"}>
                 Login
               </button>
             </form>
