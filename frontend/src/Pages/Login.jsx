@@ -30,21 +30,22 @@ const Login = () => {
     console.warn(email, password);
     let item = { email, password };
     try {
-      let result = await fetch("http://127.0.0.1:8000/api/user/login", {
+      let result = await fetch('http://127.0.0.1:8000/api/user/login', {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
         },
-        body: JSON.stringify(item)
+        body: JSON.stringify(item),
       });
       if (!result.ok) {
         throw new Error('Login failed. Please check your credentials.');
       }
       result = await result.json();
-      localStorage.setItem("user-info", JSON.stringify(result));
+      localStorage.setItem('user-info', JSON.stringify(result));
       // Navigate to /dashboard after successful login
       navigate('/dashboard');
+      console.log('Looeg in');
     } catch (error) {
       setError(error.message);
     }
