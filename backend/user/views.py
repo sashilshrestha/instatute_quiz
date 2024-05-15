@@ -7,6 +7,7 @@ from .serializers import UserSerializers
 from passlib.hash import pbkdf2_sha256
 from .utils import createAccessToken
 from quiz_project.consts import GENERIC_MESSAGES
+from bson import ObjectId
 
 class UserListCreate(generics.ListCreateAPIView):
     def post(self,request):
@@ -85,4 +86,24 @@ class UserProfileController(APIView):
         return Response({'message':GENERIC_MESSAGES['SUCCESS'],'data':user},status=status.HTTP_200_OK)
     
 
+class ChangePasswordController(APIView):
+    def put(self,request):
+        payloadData = request.data
         
+        user = User.objects.get(_id=ObjectId(payloadData['userId']))
+
+        isCorrectPassword = pbkdf2_sha256.verify(payloadData['currentPassword'],user.password)
+
+        if isCorrectPassword == False:
+            return Response({'message':'Invalid current password!'},status=status.HTTP_400_BAD_REQUEST)
+
+        isNewPasswordMatched = payloadData['password'] == payloadData['confirmPassword']
+
+        if isNewPasswordMatched == False:
+            return Response({'message':'Password mismatched!'},status=status.HTTP_400_BAD_REQUEST)
+
+        hashedPassword = pbkdf2_sha256.hash(payloadData['password'])
+
+        User.objects(email=user['email']).update_one(password=hashedPassword)
+
+        return Response({'message':'Password changed!'},status=status.HTTP_200_OK)
