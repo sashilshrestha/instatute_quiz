@@ -19,12 +19,11 @@ const isAuthenticated = () => {
   return userInfo !== null && userInfo !== undefined && userInfo !== '';
 };
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ element, ...rest }) => {
   if (!isAuthenticated()) {
     return <Navigate to="/login" />;
   }
-
-  return children;
+  return React.cloneElement(element, rest);
 };
 
 export const router = createBrowserRouter([
