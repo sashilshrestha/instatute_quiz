@@ -1,24 +1,28 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import TopScoreBoard from './TopScoreBoard';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import TopScoreBoard from "./TopScoreBoard";
+import axios from "axios";
+
 const Dashboard = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     // Get the canvas element
 
     function drawPieChart(value, maxValue) {
-      const canvas = document.getElementById('progressChart');
+      const canvas = document.getElementById("progressChart");
 
       canvas.width = 150; // Set the width of the canvas
       canvas.height = 150; // Set the height of the canvas
 
       var progressChart = new Chart(canvas, {
-        type: 'doughnut',
+        type: "doughnut",
         data: {
-          labels: ['Total Attempted Questions', 'Total Correct Answers'],
+          labels: ["Total Attempted Questions", "Total Correct Answers"],
           datasets: [
             {
               data: [value, maxValue - value],
-              backgroundColor: ['#45aeee', '#ededed'],
+              backgroundColor: ["#45aeee", "#ededed"],
             },
           ],
         },
@@ -38,7 +42,7 @@ const Dashboard = () => {
                 var value = dataset.data[context.dataIndex];
                 return value > 0;
               },
-              color: 'white',
+              color: "white",
             },
             legend: {
               title: {
@@ -50,6 +54,30 @@ const Dashboard = () => {
       });
     }
     drawPieChart(80, 100);
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    (async () => {
+      try {
+        const userDetails = localStorage.getItem("user-info") ?? null;
+        const parsedUserDetails = JSON.parse(userDetails);
+
+        console.log(parsedUserDetails);
+
+        const endPoint = "http://localhost/api/quiz/userQuiz/dashboard/";
+        const response = await axios.get(endPoint, {
+          "Content-Type": "application/json",
+        });
+
+        console.log(response);
+      } catch (err) {
+        //
+      } finally {
+        setIsLoading(false);
+      }
+    })();
   }, []);
 
   return (
@@ -159,7 +187,9 @@ const Dashboard = () => {
           </div>
 
           <div className="card w-3/4 p-6 bg-base-100 shadow-xl mt-6">
-            <div className="text-xl font-bold">🎉 Individual Top Score Ranking</div>
+            <div className="text-xl font-bold">
+              🎉 Individual Top Score Ranking
+            </div>
             <div className="divider mt-2"></div>
             <div className="h-full w-full bg-base-100">
               <div className="overflow-x-auto">
@@ -203,7 +233,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="h-16"></div>  
+        <div className="h-16"></div>
       </main>
     </>
   );

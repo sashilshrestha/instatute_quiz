@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
 
 const App = () => {
   const navigate = useNavigate();
@@ -66,8 +65,8 @@ const App = () => {
                 <div className="divider mt-0 mb-0"></div>
                 <li
                   onClick={() => {
-                    navigate('/login');
-                    localStorage.removeItem('user-info');
+                    navigate("/login");
+                    localStorage.removeItem("user-info");
                   }}
                 >
                   <a>Logout</a>

@@ -7,6 +7,7 @@ from .serializers import UserSerializers
 from passlib.hash import pbkdf2_sha256
 from .utils import createAccessToken
 from quiz_project.consts import GENERIC_MESSAGES
+from bson import ObjectId
 
 class UserListCreate(generics.ListCreateAPIView):
     def post(self,request):
@@ -47,7 +48,7 @@ class Login(APIView):
         
         accessToken = createAccessToken(serializedUser.data)
               
-        return Response({'message': GENERIC_MESSAGES['SUCCESS'],'data': accessToken, "isAdmin": serializedUser.data['is_superuser']}, status=status.HTTP_200_OK)
+        return Response({'message': GENERIC_MESSAGES['SUCCESS'],'data': {'accessToken':accessToken,'userId':user._id}, "isAdmin": serializedUser.data['is_superuser']}, status=status.HTTP_200_OK)
     
 class Register(APIView):
     def post(self,request):
@@ -73,16 +74,40 @@ class Register(APIView):
             return Response({'message':e.message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class UserProfileController(APIView):
-    
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)    
-
-    def get(self,request):
-        user = request.user
+    def get(self,request,userId):
+        payloadData = request.data
+        
+        user = User.objects(_id=ObjectId(payloadData['userId']))
+        
+        isUserAvailable = len(user) > 0
+        
+        if isUserAvailable == False:
+            return Response({'message':'User not available!'},status=status.HTTP_404_NOT_FOUND)
         
         del user['password']
         
         return Response({'message':GENERIC_MESSAGES['SUCCESS'],'data':user},status=status.HTTP_200_OK)
     
 
+class ChangePasswordController(APIView):
+    def put(self,request):
+        payloadData = request.data
         
+        user = User.objects.get(_id=ObjectId(payloadData['userId']))
+
+        isCorrectPassword = pbkdf2_sha256.verify(payloadData['currentPassword'],user.password)
+
+        if isCorrectPassword == False:
+            return Response({'message':'Invalid current password!'},status=status.HTTP_400_BAD_REQUEST)
+
+        isNewPasswordMatched = payloadData['password'] == payloadData['confirmPassword']
+
+        if isNewPasswordMatched == False:
+            return Response({'message':'Password mismatched!'},status=status.HTTP_400_BAD_REQUEST)
+
+        hashedPassword = pbkdf2_sha256.hash(payloadData['password'])
+
+        User.objects(email=user['email']).update_one(password=hashedPassword)
+
+        return Response({'message':'Password changed!'},status=status.HTTP_200_OK)
+
