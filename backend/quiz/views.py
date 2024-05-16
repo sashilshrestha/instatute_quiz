@@ -58,7 +58,6 @@ class SubjectController(APIView):
         questionsSetSerializer = QuestionSetSerializers(questionSets,many=True)
         
         return Response({'message':"Success",'data':questionsSetSerializer.data},status=status.HTTP_200_OK)
-        
 class QuestionBankController(APIView):
     def post(self,request):
         payloadData = request.data
