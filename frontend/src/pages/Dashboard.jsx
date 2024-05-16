@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TopScoreBoard from "./TopScoreBoard";
+import axios from "axios";
 
 const Dashboard = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     // Get the canvas element
 
@@ -51,6 +54,30 @@ const Dashboard = () => {
       });
     }
     drawPieChart(80, 100);
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    (async () => {
+      try {
+        const userDetails = localStorage.getItem("user-info") ?? null;
+        const parsedUserDetails = JSON.parse(userDetails);
+
+        console.log(parsedUserDetails);
+
+        const endPoint = "http://localhost/api/quiz/userQuiz/dashboard/";
+        const response = await axios.get(endPoint, {
+          "Content-Type": "application/json",
+        });
+
+        console.log(response);
+      } catch (err) {
+        //
+      } finally {
+        setIsLoading(false);
+      }
+    })();
   }, []);
 
   return (
