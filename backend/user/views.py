@@ -77,9 +77,7 @@ class Register(APIView):
         
 class UserProfileController(APIView):
     def get(self,request,userId):
-        payloadData = request.data
-        
-        user = User.objects(_id=ObjectId(payloadData['userId']))
+        user = User.objects(_id=ObjectId(userId))
         
         isUserAvailable = len(user) > 0
         
