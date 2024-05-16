@@ -48,7 +48,7 @@ class Login(APIView):
         
         accessToken = createAccessToken(serializedUser.data)
               
-        return Response({'message': GENERIC_MESSAGES['SUCCESS'],'data': accessToken, "isAdmin": serializedUser.data['is_superuser']}, status=status.HTTP_200_OK)
+        return Response({'message': GENERIC_MESSAGES['SUCCESS'],'data': {'accessToken':accessToken,'userId':user._id}, "isAdmin": serializedUser.data['is_superuser']}, status=status.HTTP_200_OK)
     
 class Register(APIView):
     def post(self,request):
@@ -74,12 +74,15 @@ class Register(APIView):
             return Response({'message':e.message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class UserProfileController(APIView):
-    
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)    
-
-    def get(self,request):
-        user = request.user
+    def get(self,request,userId):
+        payloadData = request.data
+        
+        user = User.objects(_id=ObjectId(payloadData['userId']))
+        
+        isUserAvailable = len(user) > 0
+        
+        if isUserAvailable == False:
+            return Response({'message':'User not available!'},status=status.HTTP_404_NOT_FOUND)
         
         del user['password']
         
@@ -107,3 +110,4 @@ class ChangePasswordController(APIView):
         User.objects(email=user['email']).update_one(password=hashedPassword)
 
         return Response({'message':'Password changed!'},status=status.HTTP_200_OK)
+
