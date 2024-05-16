@@ -47,8 +47,10 @@ class Login(APIView):
         
         
         accessToken = createAccessToken(serializedUser.data)
+        
+        print(serializedUser)
               
-        return Response({'message': GENERIC_MESSAGES['SUCCESS'],'data': {'accessToken':accessToken,'userId':user._id}, "isAdmin": serializedUser.data['is_superuser']}, status=status.HTTP_200_OK)
+        return Response({'message': GENERIC_MESSAGES['SUCCESS'],'data': {'accessToken':accessToken,'userId':serializedUser.data['_id']}, "isAdmin": serializedUser.data['is_superuser']}, status=status.HTTP_200_OK)
     
 class Register(APIView):
     def post(self,request):
