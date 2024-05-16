@@ -14,6 +14,7 @@ const initialState = {
   index: 0,
   selectedOption: null,
   score: 0,
+  categoryNum: '',
 };
 
 const reducer = (state, action) => {
@@ -23,6 +24,11 @@ const reducer = (state, action) => {
         ...state,
         questions: action.payload,
         status: 'active',
+      };
+    case 'categoryNum':
+      return {
+        ...state,
+        categoryNum: action.payload,
       };
     case 'dataFailed':
       return {
@@ -76,8 +82,10 @@ const reducer = (state, action) => {
 };
 
 const Quiz = () => {
-  const [{ status, questions, index, selectedOption, score }, dispatch] =
-    useReducer(reducer, initialState);
+  const [
+    { status, questions, index, selectedOption, score, categoryNum },
+    dispatch,
+  ] = useReducer(reducer, initialState);
   const [showAlert, setShowAlert] = useState(false);
 
   const { categoryId } = useParams();
@@ -91,7 +99,10 @@ const Quiz = () => {
       dispatch({ type: 'setScore', payload: 10 });
   };
 
-  const nextBtn = () => {
+  const nextBtn = async () => {
+    const userInfo = localStorage.getItem('user-info');
+
+    const userId = JSON.parse(userInfo).data.userId;
     if (index === 9) dispatch({ type: 'lastQuestion' });
 
     if (selectedOption !== null) {
@@ -102,6 +113,33 @@ const Quiz = () => {
       setShowAlert(true);
     }
     dispatch({ type: 'selectOption', payload: null });
+
+    if (index + 1 === questions.length) {
+      const item = {
+        userId,
+        subjectId: categoryNum,
+        totalScores: score,
+        totalQuestions: 10,
+      };
+      try {
+        let result = await fetch('http://127.0.0.1:8000/api/quiz/userQuiz/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(item),
+        });
+        if (!result.ok) {
+          throw new Error('Scoring failed');
+        }
+        if (result.ok) {
+        }
+        result = await result.json();
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const formattedTime = format(new Date(0, 0, 0, 0, 0, secondsLeft), 'mm:ss');
@@ -113,6 +151,10 @@ const Quiz = () => {
       const previewData = await response.json();
 
       dispatch({ type: 'dataReceived', payload: previewData.data.questions });
+      dispatch({
+        type: 'categoryNum',
+        payload: previewData.data.subject['_id'],
+      });
     } catch (error) {
       dispatch({ type: 'dataFailed' });
     }
