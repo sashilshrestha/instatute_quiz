@@ -4,10 +4,19 @@ import TopScoreBoard from "./TopScoreBoard";
 import axios from "axios";
 
 const Dashboard = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [dashboardDetails, setDashboardDetails] = useState({
+    totalCategories: 0,
+    totalQuizWithQuestions: 0,
+    totalQuestions: 0,
+    userTotalScore: 0,
+    totalMarks: 0,
+    subjectHighest: 0,
+  });
 
   useEffect(() => {
     // Get the canvas element
+    if (isLoading) return;
 
     function drawPieChart(value, maxValue) {
       const canvas = document.getElementById("progressChart");
@@ -53,8 +62,11 @@ const Dashboard = () => {
         },
       });
     }
-    drawPieChart(80, 100);
-  }, []);
+
+    console.log(dashboardDetails);
+
+    drawPieChart(dashboardDetails.userTotalScore, dashboardDetails.totalMarks);
+  }, [isLoading]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -64,14 +76,14 @@ const Dashboard = () => {
         const userDetails = localStorage.getItem("user-info") ?? null;
         const parsedUserDetails = JSON.parse(userDetails);
 
-        console.log(parsedUserDetails);
+        console.log(parsedUserDetails.data.userId);
 
-        const endPoint = "http://localhost/api/quiz/userQuiz/dashboard/";
+        const endPoint = `http://127.0.0.1:8000/api/quiz/userQuiz/dashboard/${parsedUserDetails.data.userId}/`;
         const response = await axios.get(endPoint, {
           "Content-Type": "application/json",
         });
 
-        console.log(response);
+        setDashboardDetails(response.data.data);
       } catch (err) {
         //
       } finally {
@@ -104,7 +116,9 @@ const Dashboard = () => {
                 </svg>
               </div>
               <div className="stat-title">Quizes</div>
-              <div className="stat-value">250</div>
+              <div className="stat-value">
+                {isLoading ? "..." : dashboardDetails.totalQuizWithQuestions}
+              </div>
             </div>
           </div>
           <div className="stats shadow">
@@ -127,7 +141,9 @@ const Dashboard = () => {
                 </svg>
               </div>
               <div className="stat-title">Questions</div>
-              <div className="stat-value">200</div>
+              <div className="stat-value">
+                {isLoading ? "..." : dashboardDetails.totalQuizWithQuestions}
+              </div>
             </div>
           </div>
           <div className="stats shadow">
@@ -150,13 +166,17 @@ const Dashboard = () => {
                 </svg>
               </div>
               <div className="stat-title">Total Categories</div>
-              <div className="stat-value">51</div>
+              <div className="stat-value">
+                {isLoading ? "..." : dashboardDetails.totalCategories}
+              </div>
             </div>
           </div>
           <div className="stats shadow">
             <div className="stat">
-              <div className="stat-title">Total Quiz Taken</div>
-              <div className="stat-value">2500</div>
+              <div className="stat-title">Total Quiz Scores</div>
+              <div className="stat-value">
+                {isLoading ? "..." : dashboardDetails.userTotalScore}
+              </div>
               <div className="stat-figure dark:text-slate-300 text-primary">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -202,31 +222,25 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th>1st</th>
-                      <td>Mathematics</td>
-                      <td>26,345</td>
-                    </tr>
-                    <tr>
-                      <th>2nd</th>
-                      <td>Geopgraphy</td>
-                      <td>21,341</td>
-                    </tr>
-                    <tr>
-                      <th>3rd</th>
-                      <td>Computer Sciences</td>
-                      <td>34,379</td>
-                    </tr>
-                    <tr>
-                      <th>4th</th>
-                      <td>Affiliates</td>
-                      <td>12,359</td>
-                    </tr>
-                    <tr>
-                      <th>5th</th>
-                      <td>Organic</td>
-                      <td>10,345</td>
-                    </tr>
+                    {isLoading ? (
+                      "Loading.."
+                    ) : !dashboardDetails.subjectHighest.length ? (
+                      <p style={{ textAlign: "center" }}>
+                        You have not enrolled in any quiz.
+                      </p>
+                    ) : (
+                      dashboardDetails.subjectHighest.map(
+                        (subject, subjectIndex) => {
+                          return (
+                            <tr key={subjectIndex}>
+                              <th>{subjectIndex + 1}</th>
+                              <td>{subject.subject.name}</td>
+                              <td>{subject.highestMarks}</td>
+                            </tr>
+                          );
+                        }
+                      )
+                    )}
                   </tbody>
                 </table>
               </div>
