@@ -29,7 +29,7 @@ class SubjectController(APIView):
         
         return Response({'message':'Success','data':serializedSubjectRecords.data},status=status.HTTP_200_OK)
         
-class QuestionSetController(APIView):
+
     def post(self,request):
         payloadData = request.data
         
@@ -58,7 +58,6 @@ class QuestionSetController(APIView):
         questionsSetSerializer = QuestionSetSerializers(questionSets,many=True)
         
         return Response({'message':"Success",'data':questionsSetSerializer.data},status=status.HTTP_200_OK)
-        
 class QuestionBankController(APIView):
     def post(self,request):
         payloadData = request.data

@@ -47,8 +47,6 @@ class Login(APIView):
         
         
         accessToken = createAccessToken(serializedUser.data)
-        
-        print(serializedUser)
               
         return Response({'message': GENERIC_MESSAGES['SUCCESS'],'data': {'accessToken':accessToken,'userId':serializedUser.data['_id']}, "isAdmin": serializedUser.data['is_superuser']}, status=status.HTTP_200_OK)
     
@@ -67,10 +65,7 @@ class Register(APIView):
            userExec.setPassword(password)
            userExec.save()
            
-           
-           accessToken = createAccessToken({"email":email})
-           
-           return Response({'message': GENERIC_MESSAGES['SUCCESS'],'data': accessToken}, status=status.HTTP_200_OK)
+           return Response({'message': GENERIC_MESSAGES['SUCCESS']}, status=status.HTTP_200_OK)
           
         except Exception as e:  
             return Response({'message':e.message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
