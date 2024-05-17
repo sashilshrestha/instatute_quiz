@@ -12,12 +12,10 @@ export default function Finish({ score, totalScore }) {
           of {totalScore}
         </p>
       </div>
-      <h1 className=" font-hankengrotesk text-3xl sm:text-2xl mb-2 font-extrabold text-sky-900">
+      {/* <h1 className=" font-hankengrotesk text-3xl sm:text-2xl mb-2 font-extrabold text-sky-900">
         Great
-      </h1>
-      <p className="text-center text-[#ebf1ff] text-lg sm:text-base font-hankengrotesk">
-        You scored higher than 65% of the people who have taken these tests.
-      </p>
+      </h1> */}
+      <p className="text-center text-[#ebf1ff] text-lg sm:text-base font-hankengrotesk"></p>
     </div>
   );
 }

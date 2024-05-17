@@ -1,4 +1,5 @@
 import React, { useReducer, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Logo from '../../public/Logo.png';
 import axios from 'axios';
 import { BASE_URL } from '../consts/consts';
@@ -108,11 +109,11 @@ const Register = () => {
 
               <div className="text-center mt-4">
                 Already have an account?{' '}
-                {/* <Link to="/login">
+                <Link to="/login">
                   <span className="  inline-block  hover:text-primary hover:underline hover:cursor-pointer transition duration-200">
                     Login
                   </span>
-                </Link>  */}
+                </Link>
               </div>
             </form>
           </div>

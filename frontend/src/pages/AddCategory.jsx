@@ -1,18 +1,20 @@
 import React from 'react';
 import { useState } from 'react';
 import Alert from '../components/Alert';
+import Loading from '../components/Loading';
 
 const AddCategory = () => {
   const [category, setCategory] = useState('');
   const [alert, setAlert] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   let item = { name: category };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(item);
 
     try {
+      setLoading(true);
       let result = await fetch('http://127.0.0.1:8000/api/quiz/subjects/', {
         method: 'POST',
         headers: {
@@ -25,6 +27,7 @@ const AddCategory = () => {
         throw new Error('Subject addition failed');
       }
       if (result.ok) {
+        setLoading(false);
         setAlert(true);
       }
       result = await result.json();
@@ -38,6 +41,15 @@ const AddCategory = () => {
       setCategory('');
     }, 1000);
   };
+
+  if (isLoading)
+    return (
+      <div className="relative w-full h-64">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 ">
+          <Loading />
+        </div>
+      </div>
+    );
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-300  .bg-gray-500">
