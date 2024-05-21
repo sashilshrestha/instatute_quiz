@@ -69,21 +69,6 @@ class Register(APIView):
           
         except Exception as e:  
             return Response({'message':e.message},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-class UserProfileController(APIView):
-    def get(self,request,userId):
-        user = User.objects(_id=ObjectId(userId))
-        
-        isUserAvailable = len(user) > 0
-        
-        if isUserAvailable == False:
-            return Response({'message':'User not available!'},status=status.HTTP_404_NOT_FOUND)
-        
-        del user['password']
-        
-        return Response({'message':GENERIC_MESSAGES['SUCCESS'],'data':user},status=status.HTTP_200_OK)
-    
-
 class ChangePasswordController(APIView):
     def put(self,request):
         payloadData = request.data
@@ -105,4 +90,20 @@ class ChangePasswordController(APIView):
         User.objects(email=user['email']).update_one(password=hashedPassword)
 
         return Response({'message':'Password changed!'},status=status.HTTP_200_OK)
+    
+        
+class UserProfileController(APIView):
+    def get(self,request,userId):
+        user = User.objects(_id=ObjectId(userId))
+        
+        isUserAvailable = len(user) > 0
+        
+        if isUserAvailable == False:
+            return Response({'message':'User not available!'},status=status.HTTP_404_NOT_FOUND)
+        
+        del user['password']
+        
+        return Response({'message':GENERIC_MESSAGES['SUCCESS'],'data':user},status=status.HTTP_200_OK)
+    
+
 
